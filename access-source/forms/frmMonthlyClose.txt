@@ -1,0 +1,339 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =1
+    ViewsAllowed =1
+    ScrollBars =2
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =13600
+    DatasheetFontHeight =11
+    ItemSuffix =24
+    Caption ="月次締め処理・給与CSV出力 (frmMonthlyClose)"
+    RecordSource ="MonthlyClosings"
+    OnLoad ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =2680
+            BackColor =15921906
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =180
+                    Width =6200
+                    Height =440
+                    FontSize =14
+                    FontWeight =700
+                    Name ="lblTitle"
+                    Caption ="月次締め管理・旧給与ソフトCSV出力"
+                End
+                Begin CommandButton
+                    Left =10800
+                    Top =180
+                    Width =2400
+                    Height =440
+                    Name ="btnCloseForm"
+                    Caption ="メニューへ戻る"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =820
+                    Width =1560
+                    Height =300
+                    Name ="lblTargetYM"
+                    Caption ="対象年月 (YYYY-MM):"
+                End
+                Begin TextBox
+                    Left =2040
+                    Top =800
+                    Width =1440
+                    Height =340
+                    Name ="txtCloseYM"
+                    ControlSource =""
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =3760
+                    Top =820
+                    Width =960
+                    Height =300
+                    Name ="lblNote"
+                    Caption ="備考:"
+                End
+                Begin TextBox
+                    Left =4800
+                    Top =800
+                    Width =4400
+                    Height =340
+                    Name ="txtCloseNote"
+                    ControlSource =""
+                End
+                Begin CommandButton
+                    Left =9440
+                    Top =780
+                    Width =1800
+                    Height =420
+                    FontWeight =700
+                    Name ="btnExecuteClose"
+                    Caption ="月次締め確定"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =11400
+                    Top =780
+                    Width =1800
+                    Height =420
+                    Name ="btnReopenMonth"
+                    Caption ="締め解除"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =1420
+                    Width =2200
+                    Height =300
+                    Name ="lblPreOpen"
+                    Caption ="対象月の未退勤・休憩中件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =2640
+                    Top =1400
+                    Width =960
+                    Height =340
+                    Name ="txtPreCheckOpen"
+                    ControlSource ="=DCount(\"AttendanceID\",\"AttendanceRecords\",\"Left(WorkDate,7)='\" & Nz([txtCloseYM],'') & \"' AND Status IN ('Working','OnBreak')\")"
+                End
+                Begin Label
+                    Left =3920
+                    Top =1420
+                    Width =2200
+                    Height =300
+                    Name ="lblPrePending"
+                    Caption ="対象月の未承認申請件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =6200
+                    Top =1400
+                    Width =960
+                    Height =340
+                    Name ="txtPreCheckPending"
+                    ControlSource ="=DCount(\"RequestID\",\"CorrectionRequests\",\"Left(TargetDate,7)='\" & Nz([txtCloseYM],'') & \"' AND ApprovalStatus='0'\")"
+                End
+                Begin CommandButton
+                    Left =9440
+                    Top =1380
+                    Width =3760
+                    Height =420
+                    Name ="btnExportPayrollCsv"
+                    Caption ="給与連携CSV出力 (旧様式)"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =2240
+                    Width =1400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHYM"
+                    Caption ="対象年月"
+                End
+                Begin Label
+                    Left =1900
+                    Top =2240
+                    Width =1400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHFlag"
+                    Caption ="締状態"
+                End
+                Begin Label
+                    Left =3440
+                    Top =2240
+                    Width =1400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHBy"
+                    Caption ="実行者ID"
+                End
+                Begin Label
+                    Left =4980
+                    Top =2240
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHAt"
+                    Caption ="締め日時"
+                End
+                Begin Label
+                    Left =7520
+                    Top =2240
+                    Width =5680
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHNote"
+                    Caption ="備考"
+                End
+            End
+        End
+        Begin Section
+            Height =520
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =360
+                    Top =90
+                    Width =1400
+                    Height =340
+                    Name ="txtTargetYM"
+                    ControlSource ="TargetYM"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1900
+                    Top =90
+                    Width =1400
+                    Height =340
+                    Name ="txtCloseFlagDisp"
+                    ControlSource ="=IIf([CloseFlag]=\"1\",\"締済(1)\",\"未締(0)\")"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =3440
+                    Top =90
+                    Width =1400
+                    Height =340
+                    Name ="txtClosedBy"
+                    ControlSource ="ClosedBy"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =4980
+                    Top =90
+                    Width =2400
+                    Height =340
+                    Name ="txtClosedAt"
+                    ControlSource ="ClosedAt"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =7520
+                    Top =90
+                    Width =5680
+                    Height =340
+                    Name ="txtNote"
+                    ControlSource ="Note"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =520
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =120
+                    Width =12840
+                    Height =300
+                    Name ="lblCloseStatusMsg"
+                    Caption ="未退勤・未承認が0件の月のみ締め確定できます。"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Me.txtCloseYM.Value = Format$(Date, "yyyy-mm")
+    Me.txtCloseNote.Value = ""
+    Me.Recalc
+End Sub
+
+Private Sub txtCloseYM_AfterUpdate()
+    Me.Recalc
+End Sub
+
+Private Sub btnExecuteClose_Click()
+    Dim ymText As String
+    Dim noteText As String
+    Dim msg As String
+
+    ymText = Trim$(Nz(Me.txtCloseYM.Value, ""))
+    noteText = Trim$(Nz(Me.txtCloseNote.Value, ""))
+
+    If ExecuteMonthlyClose(ymText, GetActiveUserID(), CLOSE_LOCKED, noteText, msg) Then
+        Me.Requery
+        Me.Recalc
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbInformation, "月次締め確定"
+    Else
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbExclamation, "月次締め不可"
+    End If
+End Sub
+
+Private Sub btnReopenMonth_Click()
+    Dim ymText As String
+    Dim noteText As String
+    Dim msg As String
+
+    ymText = Trim$(Nz(Me.txtCloseYM.Value, ""))
+    noteText = Trim$(Nz(Me.txtCloseNote.Value, ""))
+
+    If MsgBox(ymText & " の月次締めを解除しますか？", vbYesNo + vbQuestion, "締め解除確認") <> vbYes Then
+        Exit Sub
+    End If
+
+    If ExecuteMonthlyClose(ymText, GetActiveUserID(), CLOSE_OPEN, noteText, msg) Then
+        Me.Requery
+        Me.Recalc
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbInformation, "締め解除完了"
+    Else
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbExclamation, "締め解除エラー"
+    End If
+End Sub
+
+Private Sub btnExportPayrollCsv_Click()
+    Dim ymText As String
+    Dim outPath As String
+    Dim msg As String
+
+    ymText = Trim$(Nz(Me.txtCloseYM.Value, ""))
+    outPath = CurrentProject.Path & "\payroll_" & Replace(ymText, "-", "") & ".csv"
+
+    If ExportMonthlyPayrollCsv(ymText, outPath, msg) Then
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbInformation, "給与CSV出力"
+    Else
+        Me.lblCloseStatusMsg.Caption = msg
+        MsgBox msg, vbExclamation, "CSV出力エラー"
+    End If
+End Sub
+
+Private Sub btnCloseForm_Click()
+    DoCmd.Close acForm, Me.Name, acSaveNo
+End Sub

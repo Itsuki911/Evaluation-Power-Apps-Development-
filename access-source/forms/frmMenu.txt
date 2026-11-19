@@ -1,0 +1,291 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =0
+    ViewsAllowed =1
+    ScrollBars =0
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =11800
+    DatasheetFontHeight =11
+    ItemSuffix =22
+    Caption ="社内勤怠管理システム - メインメニュー"
+    RecordSource =""
+    OnLoad ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =1320
+            BackColor =12566463
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =220
+                    Width =7200
+                    Height =480
+                    FontSize =16
+                    FontWeight =700
+                    Name ="lblAppTitle"
+                    Caption ="社内勤怠管理システム (Ver 3.4)"
+                End
+                Begin Label
+                    Left =360
+                    Top =780
+                    Width =2200
+                    Height =320
+                    Name ="lblOperator"
+                    Caption ="操作担当者切替:"
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    ColumnCount =4
+                    ColumnHeads = NotDefault
+                    Left =2580
+                    Top =760
+                    Width =5400
+                    Height =340
+                    BoundColumn =1
+                    ColumnWidths ="1100;1800;1300;1100"
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT EmployeeID, EmployeeName, Department, Role FROM Employees WHERE Status = 'Active' ORDER BY EmployeeID;"
+                    Name ="cboOperator"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =8400
+                    Top =760
+                    Width =1400
+                    Height =320
+                    Name ="txtHiddenRole"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =8400
+                    Top =260
+                    Width =3000
+                    Height =340
+                    Name ="lblRoleBadge"
+                    Caption ="権限: -"
+                End
+            End
+        End
+        Begin Section
+            Height =5600
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =240
+                    Width =11040
+                    Height =340
+                    FontWeight =700
+                    Name ="lblAlertBanner"
+                    Caption ="日次アラート状況"
+                End
+                Begin Label
+                    Left =360
+                    Top =680
+                    Width =2400
+                    Height =320
+                    Name ="lblOpenCount"
+                    Caption ="現在の未退勤・休憩中件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =2880
+                    Top =660
+                    Width =1200
+                    Height =340
+                    Name ="txtOpenCount"
+                    ControlSource ="=DCount(\"AttendanceID\",\"qryOpenAttendance\")"
+                End
+                Begin Label
+                    Left =4680
+                    Top =680
+                    Width =2200
+                    Height =320
+                    Name ="lblPendingCount"
+                    Caption ="未承認の修正申請件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =7020
+                    Top =660
+                    Width =1200
+                    Height =340
+                    Name ="txtPendingCount"
+                    ControlSource ="=DCount(\"RequestID\",\"qryPendingCorrections\")"
+                End
+                Begin CommandButton
+                    Left =600
+                    Top =1440
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    FontWeight =700
+                    Name ="btnMenuPunch"
+                    Caption ="1. タイムカード打刻 (出勤・休憩・退勤)"
+                    OnClick ="mcrDailyOps.OpenPunchCard"
+                End
+                Begin CommandButton
+                    Left =6200
+                    Top =1440
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    FontWeight =700
+                    Name ="btnMenuAttendance"
+                    Caption ="2. 月次出勤簿・勤怠履歴照会"
+                    OnClick ="[Embedded Macro]"
+                    OnClickEmMacro = Begin
+                        Version =196611
+                        ColumnsShown =0
+                        Begin
+                            Action ="OpenForm"
+                            Argument ="frmAttendance"
+                            Argument ="0"
+                            Argument =""
+                            Argument =""
+                            Argument ="-1"
+                            Argument ="0"
+                        End
+                        Begin
+                            Comment ="_AXL:<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?><UserInterfaceMacro For=\"btnMenuAttendance\" Event=\"OnClick\" xmlns=\"http://schemas.microsoft.com/office/accessservices/2009/11/application\"><Statements><Action Name=\"OpenForm\"><Argument Name=\"FormName\">frmAttendance</Argument></Action></Statements></UserInterfaceMacro>"
+                        End
+                    End
+                End
+                Begin CommandButton
+                    Left =600
+                    Top =2460
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    Name ="btnMenuEmployees"
+                    Caption ="3. 社員マスタ・勤務パターン一覧"
+                    OnClick ="mcrDailyOps.OpenEmployeeList"
+                End
+                Begin CommandButton
+                    Left =6200
+                    Top =2460
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    Name ="btnMenuCorrection"
+                    Caption ="4. 打刻修正申請・上長承認"
+                    OnClick ="mcrDailyOps.OpenCorrectionScreen"
+                End
+                Begin CommandButton
+                    Left =600
+                    Top =3480
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    Name ="btnMenuMonthlyClose"
+                    Caption ="5. 月次締め処理・給与CSV出力 (管理者)"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =6200
+                    Top =3480
+                    Width =4800
+                    Height =720
+                    FontSize =12
+                    Name ="btnMenuDeptReport"
+                    Caption ="6. 部署別残業サマリーレポート"
+                    OnClick ="mcrDailyOps.PreviewDeptReport"
+                End
+                Begin CommandButton
+                    Left =8400
+                    Top =4680
+                    Width =2600
+                    Height =540
+                    Name ="btnExitApp"
+                    Caption ="システム終了"
+                    OnClick ="[Event Procedure]"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =540
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =120
+                    Width =10800
+                    Height =300
+                    Name ="lblFooterInfo"
+                    Caption ="※ 月次締済月の修正は「4. 打刻修正申請・上長承認」から申請してください。"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Dim activeUser As String
+
+    activeUser = GetActiveUserID()
+    If Len(activeUser) = 0 Then
+        InitAppContext
+        activeUser = GetActiveUserID()
+    End If
+
+    Me.cboOperator.Value = activeUser
+    SyncRoleDisplay
+End Sub
+
+Private Sub SyncRoleDisplay()
+    Dim empId As String
+    Dim roleText As String
+    Dim canAdmin As Boolean
+
+    empId = Trim$(Nz(Me.cboOperator.Value, ""))
+    SetSessionUser empId
+    roleText = GetActiveUserRole()
+    Me.txtHiddenRole.Value = roleText
+    Me.lblRoleBadge.Caption = "権限: " & roleText
+
+    canAdmin = IsManagerOrAdmin(empId)
+    Me.btnMenuMonthlyClose.Enabled = canAdmin
+    Me.Recalc
+End Sub
+
+Private Sub cboOperator_AfterUpdate()
+    SyncRoleDisplay
+End Sub
+
+Private Sub btnMenuMonthlyClose_Click()
+    Dim empId As String
+    empId = GetActiveUserID()
+    If Not IsManagerOrAdmin(empId) Then
+        MsgBox "月次締め画面は Manager または Admin 権限のみ利用できます。", vbExclamation, "権限エラー"
+        Exit Sub
+    End If
+    DoCmd.OpenForm "frmMonthlyClose", acNormal
+End Sub
+
+Private Sub btnExitApp_Click()
+    If MsgBox("勤怠管理システムを終了しますか？", vbYesNo + vbQuestion, "終了確認") = vbYes Then
+        DoCmd.Quit acQuitSaveNone
+    End If
+End Sub

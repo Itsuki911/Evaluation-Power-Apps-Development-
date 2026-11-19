@@ -2,11 +2,11 @@
   "metadata": {
     "fileCategory": "custom_auxiliary",
     "isSimulatedAccessExport": false,
-    "description": "Simulated Microsoft Access linked-table configuration and Excel write-back settings."
+    "description": "Simulated Microsoft Access linked-table connections and ADODB Excel write-back settings."
   },
   "accessExcelConstraints": {
     "reference": "Microsoft ACE Excel ISAM restriction (KB 904953)",
-    "summary": "Linked Excel tables in Microsoft Access are read-only for DAO UPDATE/DELETE operations. Queries, Forms, and Reports read through the linked tables, while VBA write operations (Clock-In INSERT and Clock-Out UPDATE) execute via ADODB against Microsoft.ACE.OLEDB.12.0 with READONLY=FALSE.",
+    "summary": "Linked Excel tables in Microsoft Access do not support DAO UPDATE/DELETE. Read operations use DAO/queries/Domain Aggregates on linked tables, whereas write operations in modAttendance.bas use late-bound ADODB (Microsoft.ACE.OLEDB.12.0; READONLY=FALSE).",
     "deleteSupportedOnExcel": false
   },
   "links": [
@@ -20,6 +20,15 @@
       "accessMode": "read-only"
     },
     {
+      "accessTableName": "WorkPatterns",
+      "workbookRelativePath": "data/WorkPatterns.xlsx",
+      "worksheetName": "WorkPatterns",
+      "excelTableName": "WorkPatternsTable",
+      "accessSourceTableName": "WorkPatterns$",
+      "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\WorkPatterns.xlsx",
+      "accessMode": "read-only"
+    },
+    {
       "accessTableName": "AttendanceRecords",
       "workbookRelativePath": "data/AttendanceRecords.xlsx",
       "worksheetName": "AttendanceRecords",
@@ -28,6 +37,28 @@
       "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\AttendanceRecords.xlsx",
       "writeBackProvider": "ADODB (Microsoft.ACE.OLEDB.12.0)",
       "simulatedAdoWriteConnectString": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\\data\\AttendanceRecords.xlsx;Extended Properties=\"Excel 12.0 Xml;HDR=YES;READONLY=FALSE;\";",
+      "accessMode": "read-via-linked-table-write-via-adodb"
+    },
+    {
+      "accessTableName": "CorrectionRequests",
+      "workbookRelativePath": "data/CorrectionRequests.xlsx",
+      "worksheetName": "CorrectionRequests",
+      "excelTableName": "CorrectionRequestsTable",
+      "accessSourceTableName": "CorrectionRequests$",
+      "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\CorrectionRequests.xlsx",
+      "writeBackProvider": "ADODB (Microsoft.ACE.OLEDB.12.0)",
+      "simulatedAdoWriteConnectString": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\\data\\CorrectionRequests.xlsx;Extended Properties=\"Excel 12.0 Xml;HDR=YES;READONLY=FALSE;\";",
+      "accessMode": "read-via-linked-table-write-via-adodb"
+    },
+    {
+      "accessTableName": "MonthlyClosings",
+      "workbookRelativePath": "data/MonthlyClosings.xlsx",
+      "worksheetName": "MonthlyClosings",
+      "excelTableName": "MonthlyClosingsTable",
+      "accessSourceTableName": "MonthlyClosings$",
+      "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\MonthlyClosings.xlsx",
+      "writeBackProvider": "ADODB (Microsoft.ACE.OLEDB.12.0)",
+      "simulatedAdoWriteConnectString": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\\data\\MonthlyClosings.xlsx;Extended Properties=\"Excel 12.0 Xml;HDR=YES;READONLY=FALSE;\";",
       "accessMode": "read-via-linked-table-write-via-adodb"
     }
   ]

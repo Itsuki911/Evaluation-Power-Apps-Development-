@@ -12,78 +12,90 @@ Begin Form
     PictureAlignment =2
     DatasheetGridlinesBehavior =3
     GridY =10
-    Width =14400
+    Width =15200
     DatasheetFontHeight =11
-    ItemSuffix =24
-    Caption ="勤怠管理 - メイン画面"
+    ItemSuffix =34
+    Caption ="タイムカード打刻画面 (frmMain)"
     RecordSource =""
+    TimerInterval =1000
     OnLoad ="[Event Procedure]"
+    OnTimer ="[Event Procedure]"
     AllowAdditions = NotDefault
     AllowDeletions = NotDefault
     AllowEdits = NotDefault
     Begin
         Begin FormHeader
-            Height =1200
+            Height =1320
             BackColor =15921906
             Name ="FormHeader"
             Begin
                 Begin Label
                     Left =360
-                    Top =240
-                    Width =4200
-                    Height =480
-                    FontSize =16
+                    Top =200
+                    Width =4600
+                    Height =460
+                    FontSize =15
                     FontWeight =700
                     Name ="lblTitle"
-                    Caption ="勤怠管理システム"
+                    Caption ="タイムカード打刻"
                 End
                 Begin Label
                     Left =360
                     Top =760
-                    Width =3600
-                    Height =300
-                    FontSize =10
-                    Name ="lblTodayDate"
-                    Caption ="本日: -"
+                    Width =4600
+                    Height =360
+                    FontSize =12
+                    FontWeight =700
+                    Name ="lblClockNow"
+                    Caption ="現在時刻: ----/--/-- --:--:--"
                 End
                 Begin CommandButton
-                    Left =6480
-                    Top =360
-                    Width =2280
-                    Height =480
+                    Left =5600
+                    Top =300
+                    Width =2000
+                    Height =460
+                    Name ="btnBackMenu"
+                    Caption ="メニューへ"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =7800
+                    Top =300
+                    Width =2160
+                    Height =460
                     Name ="btnOpenEmployees"
                     Caption ="従業員一覧"
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =9000
-                    Top =360
-                    Width =2280
-                    Height =480
+                    Left =10160
+                    Top =300
+                    Width =2200
+                    Height =460
                     Name ="btnOpenAttendance"
-                    Caption ="勤怠記録一覧"
+                    Caption ="月次出勤簿"
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =11520
-                    Top =360
-                    Width =2520
-                    Height =480
-                    Name ="btnOpenReport"
-                    Caption ="勤怠履歴レポート"
+                    Left =12560
+                    Top =300
+                    Width =2280
+                    Height =460
+                    Name ="btnOpenCorrection"
+                    Caption ="修正申請画面"
                     OnClick ="[Event Procedure]"
                 End
             End
         End
         Begin Section
-            Height =8400
+            Height =9100
             BackColor =16777215
             Name ="Detail"
             Begin
                 Begin Label
                     Left =360
-                    Top =300
-                    Width =1800
+                    Top =280
+                    Width =1500
                     Height =320
                     FontWeight =700
                     Name ="lblSelectEmployee"
@@ -91,151 +103,239 @@ Begin Form
                 End
                 Begin ComboBox
                     LimitToList = NotDefault
-                    ColumnCount =3
+                    ColumnCount =4
                     ColumnHeads = NotDefault
-                    Left =2280
-                    Top =280
-                    Width =4800
+                    Left =1960
+                    Top =260
+                    Width =5200
                     Height =360
                     BoundColumn =1
-                    ColumnWidths ="1200;2000;1600"
+                    ColumnWidths ="1100;1800;1200;1100"
                     RowSourceType ="Table/Query"
-                    RowSource ="SELECT EmployeeID, EmployeeName, Department FROM qryEmployees WHERE Status = 'Active' ORDER BY EmployeeID;"
+                    RowSource ="SELECT EmployeeID, EmployeeName, Department, PatternCode FROM qryEmployees WHERE Status = 'Active' ORDER BY EmployeeID;"
                     Name ="cboEmployee"
                     AfterUpdate ="[Event Procedure]"
                 End
-                Begin CommandButton
+                Begin Label
                     Left =7440
-                    Top =240
-                    Width =2040
-                    Height =540
+                    Top =280
+                    Width =1140
+                    Height =320
+                    Name ="lblWorkType"
+                    Caption ="勤務区分:"
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    ColumnCount =2
+                    Left =8640
+                    Top =260
+                    Width =2600
+                    Height =360
+                    BoundColumn =1
+                    ColumnWidths ="600;2000"
+                    RowSourceType ="Value List"
+                    RowSource ="\"01\";\"通常出勤\";\"03\";\"休日出勤\""
+                    DefaultValue ="\"01\""
+                    Name ="Combo9"
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =11520
+                    Top =260
+                    Width =1400
+                    Height =320
+                    Name ="Text22"
+                    ControlSource =""
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =13100
+                    Top =260
+                    Width =1400
+                    Height =320
+                    Name ="txtHiddenCloseFlag"
+                    ControlSource =""
+                End
+                Begin CommandButton
+                    Left =360
+                    Top =860
+                    Width =2400
+                    Height =640
+                    FontSize =12
                     FontWeight =700
                     Name ="btnClockIn"
                     Caption ="出勤打刻"
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =9720
-                    Top =240
-                    Width =2040
-                    Height =540
+                    Left =3000
+                    Top =860
+                    Width =2200
+                    Height =640
+                    FontSize =11
+                    Name ="Command14"
+                    Caption ="休憩開始"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =5440
+                    Top =860
+                    Width =2200
+                    Height =640
+                    FontSize =11
+                    Name ="Command15"
+                    Caption ="休憩終了"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =7880
+                    Top =860
+                    Width =2400
+                    Height =640
+                    FontSize =12
                     FontWeight =700
                     Name ="btnClockOut"
                     Caption ="退勤打刻"
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =12000
-                    Top =240
+                    Left =10680
+                    Top =860
                     Width =1800
-                    Height =540
+                    Height =640
                     Name ="btnRefresh"
-                    Caption ="最新表示"
+                    Caption ="再読込"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =12720
+                    Top =860
+                    Width =2120
+                    Height =640
+                    Name ="btnOpenReport"
+                    Caption ="出勤簿印刷"
                     OnClick ="[Event Procedure]"
                 End
                 Begin Label
                     Left =360
-                    Top =960
-                    Width =1800
+                    Top =1760
+                    Width =1400
                     Height =300
                     Name ="lblSelectedEmployeeName"
-                    Caption ="選択中の氏名:"
+                    Caption ="氏名:"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =2280
-                    Top =940
-                    Width =2600
+                    Left =1800
+                    Top =1740
+                    Width =2200
                     Height =340
                     Name ="txtSelectedEmployeeName"
                     ControlSource =""
                 End
                 Begin Label
-                    Left =5160
-                    Top =960
-                    Width =1200
+                    Left =4200
+                    Top =1760
+                    Width =1100
                     Height =300
                     Name ="lblSelectedDepartment"
-                    Caption ="所属部署:"
+                    Caption ="部署:"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =6480
-                    Top =940
-                    Width =2200
+                    Left =5360
+                    Top =1740
+                    Width =1800
                     Height =340
                     Name ="txtSelectedDepartment"
                     ControlSource =""
                 End
                 Begin Label
-                    Left =9000
-                    Top =960
-                    Width =1400
+                    Left =7360
+                    Top =1760
+                    Width =1300
                     Height =300
-                    Name ="lblCurrentStatus"
-                    Caption ="現在の状態:"
+                    Name ="lblSelectedPattern"
+                    Caption ="勤務パターン:"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =10560
-                    Top =940
-                    Width =3240
+                    Left =8720
+                    Top =1740
+                    Width =2600
+                    Height =340
+                    Name ="txtSelectedPattern"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =11520
+                    Top =1760
+                    Width =1000
+                    Height =300
+                    Name ="lblCurrentStatus"
+                    Caption ="状態:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =12560
+                    Top =1740
+                    Width =2280
                     Height =340
                     Name ="txtCurrentStatus"
                     ControlSource =""
                 End
                 Begin Label
                     Left =360
-                    Top =1680
-                    Width =4800
+                    Top =2360
+                    Width =6400
                     Height =320
                     FontWeight =700
                     Name ="lblOpenAttendance"
-                    Caption ="未退勤の従業員一覧（ダブルクリックで選択）"
+                    Caption ="未退勤・休憩中の従業員一覧（ダブルクリックで選択）"
                 End
                 Begin ListBox
-                    ColumnCount =6
+                    ColumnCount =7
                     ColumnHeads = NotDefault
                     Left =360
-                    Top =2080
-                    Width =13440
+                    Top =2740
+                    Width =14480
                     Height =2200
                     BoundColumn =2
-                    ColumnWidths ="2200;1300;2100;1600;2600;1400"
+                    ColumnWidths ="2100;1100;1800;1400;2400;2400;1400"
                     RowSourceType ="Table/Query"
-                    RowSource ="SELECT AttendanceID, EmployeeID, EmployeeName, WorkDate, ClockIn, Status FROM qryOpenAttendance;"
+                    RowSource ="SELECT AttendanceID, EmployeeID, EmployeeName, WorkDate, ClockIn, BreakStart, Status FROM qryOpenAttendance;"
                     Name ="lstOpenAttendance"
                     OnDblClick ="[Event Procedure]"
                 End
                 Begin Label
                     Left =360
-                    Top =4620
-                    Width =4800
+                    Top =5240
+                    Width =5600
                     Height =320
                     FontWeight =700
                     Name ="lblEmployeeHistory"
-                    Caption ="選択従業員の勤怠履歴"
+                    Caption ="選択従業員の勤怠履歴（15分丸め・自動休憩算出済）"
                 End
                 Begin CommandButton
-                    Left =10800
-                    Top =4560
-                    Width =3000
+                    Left =11640
+                    Top =5180
+                    Width =3200
                     Height =400
                     Name ="btnViewFullHistory"
-                    Caption ="詳細履歴画面で開く"
+                    Caption ="選択従業員の月次出勤簿を開く"
                     OnClick ="[Event Procedure]"
                 End
                 Begin ListBox
-                    ColumnCount =5
+                    ColumnCount =9
                     ColumnHeads = NotDefault
                     Left =360
-                    Top =5040
-                    Width =13440
-                    Height =3000
+                    Top =5660
+                    Width =14480
+                    Height =3160
                     BoundColumn =1
-                    ColumnWidths ="2400;1800;2800;2800;1800"
+                    ColumnWidths ="2000;1300;800;2200;2200;1100;1100;1100;1300"
                     RowSourceType ="Table/Query"
-                    RowSource ="SELECT AttendanceID, WorkDate, ClockIn, ClockOut, Status FROM qryAttendanceHistory WHERE 1 = 0;"
+                    RowSource ="SELECT AttendanceID, WorkDate, WorkTypeLabel, ClockIn, ClockOut, NetWorkHHMM, OvertimeMin, LateNightMin, Status FROM qryAttendanceCalc WHERE 1 = 0;"
                     Name ="lstEmployeeHistory"
                 End
             End
@@ -247,11 +347,11 @@ Begin Form
             Begin
                 Begin Label
                     Left =360
-                    Top =150
-                    Width =13440
+                    Top =140
+                    Width =14480
                     Height =320
                     Name ="lblStatusMessage"
-                    Caption ="従業員を選択し、出勤打刻または退勤打刻を実行してください。"
+                    Caption ="従業員を選択し、出勤・休憩・退勤のいずれかを打刻してください。"
                 End
             End
         End
@@ -265,17 +365,34 @@ Attribute VB_Exposed = False
 Option Compare Database
 Option Explicit
 
+' History:
+'   2011/04/01 山本: 初期作成
+'   2015/05/12 佐藤: Command14(休憩開始) / Command15(休憩終了) を追加
+'   2018/11/20 高橋: 当月締め状態(txtHiddenCloseFlag)チェックを追加
+
 Private Sub Form_Load()
-    Me.lblTodayDate.Caption = "本日: " & Format$(Date, "yyyy-mm-dd")
-    Me.txtSelectedEmployeeName.Value = ""
-    Me.txtSelectedDepartment.Value = ""
-    Me.txtCurrentStatus.Value = "-"
+    Dim initEmp As String
+
+    Me.lblClockNow.Caption = "現在時刻: " & Format$(Now(), "yyyy-mm-dd hh:nn:ss")
+    Me.Combo9.Value = WT_NORMAL
+    Me.txtHiddenCloseFlag.Value = IIf(IsMonthClosed(Format$(Date, "yyyy-mm")), CLOSE_LOCKED, CLOSE_OPEN)
+
+    initEmp = ParseOpenArgToken(Me.OpenArgs, 0)
+    If Len(initEmp) > 0 Then
+        Me.cboEmployee.Value = initEmp
+    End If
+
     RefreshAttendanceViews
+End Sub
+
+Private Sub Form_Timer()
+    Me.lblClockNow.Caption = "現在時刻: " & Format$(Now(), "yyyy-mm-dd hh:nn:ss")
 End Sub
 
 Public Sub SelectEmployee(ByVal employeeId As String)
     Me.cboEmployee.Requery
     Me.cboEmployee.Value = employeeId
+    TempVars.Add "SelectedPunchEmpID", employeeId
     UpdateSelectedEmployeeDisplay
     RefreshSelectedEmployeeHistory employeeId
 End Sub
@@ -285,6 +402,7 @@ Public Sub RefreshAttendanceViews()
 
     Me.cboEmployee.Requery
     Me.lstOpenAttendance.Requery
+    Me.txtHiddenCloseFlag.Value = IIf(IsMonthClosed(Format$(Date, "yyyy-mm")), CLOSE_LOCKED, CLOSE_OPEN)
 
     selectedId = Nz(Me.cboEmployee.Value, "")
     UpdateSelectedEmployeeDisplay
@@ -293,17 +411,23 @@ End Sub
 
 Private Sub UpdateSelectedEmployeeDisplay()
     Dim selectedId As String
+    Dim ptnCode As String
 
     selectedId = Trim$(Nz(Me.cboEmployee.Value, ""))
     If Len(selectedId) = 0 Then
         Me.txtSelectedEmployeeName.Value = ""
         Me.txtSelectedDepartment.Value = ""
+        Me.txtSelectedPattern.Value = ""
+        Me.Text22.Value = ""
         Me.txtCurrentStatus.Value = "-"
         Exit Sub
     End If
 
     Me.txtSelectedEmployeeName.Value = Nz(DLookup("EmployeeName", "Employees", "EmployeeID = '" & SqlEscape(selectedId) & "'"), "")
     Me.txtSelectedDepartment.Value = Nz(DLookup("Department", "Employees", "EmployeeID = '" & SqlEscape(selectedId) & "'"), "")
+    ptnCode = Nz(DLookup("PatternCode", "Employees", "EmployeeID = '" & SqlEscape(selectedId) & "'"), "")
+    Me.Text22.Value = ptnCode
+    Me.txtSelectedPattern.Value = Nz(DLookup("PatternName", "WorkPatterns", "PatternCode = '" & SqlEscape(ptnCode) & "'"), ptnCode)
     Me.txtCurrentStatus.Value = GetEmployeeCurrentStatus(selectedId)
 End Sub
 
@@ -313,12 +437,12 @@ Private Sub RefreshSelectedEmployeeHistory(ByVal employeeId As String)
     safeId = SqlEscape(Trim$(employeeId))
     If Len(safeId) = 0 Then
         Me.lstEmployeeHistory.RowSource = _
-            "SELECT AttendanceID, WorkDate, ClockIn, ClockOut, Status " & _
-            "FROM qryAttendanceHistory WHERE 1 = 0;"
+            "SELECT AttendanceID, WorkDate, WorkTypeLabel, ClockIn, ClockOut, NetWorkHHMM, OvertimeMin, LateNightMin, Status " & _
+            "FROM qryAttendanceCalc WHERE 1 = 0;"
     Else
         Me.lstEmployeeHistory.RowSource = _
-            "SELECT AttendanceID, WorkDate, ClockIn, ClockOut, Status " & _
-            "FROM qryAttendanceHistory " & _
+            "SELECT AttendanceID, WorkDate, WorkTypeLabel, ClockIn, ClockOut, NetWorkHHMM, OvertimeMin, LateNightMin, Status " & _
+            "FROM qryAttendanceCalc " & _
             "WHERE EmployeeID = '" & safeId & "' " & _
             "ORDER BY WorkDate DESC, ClockIn DESC, AttendanceID DESC;"
     End If
@@ -328,6 +452,7 @@ End Sub
 Private Sub cboEmployee_AfterUpdate()
     Dim selectedId As String
     selectedId = Nz(Me.cboEmployee.Value, "")
+    TempVars.Add "SelectedPunchEmpID", selectedId
     UpdateSelectedEmployeeDisplay
     RefreshSelectedEmployeeHistory selectedId
     Me.lblStatusMessage.Caption = "選択従業員: " & selectedId & " (" & Nz(Me.txtSelectedEmployeeName.Value, "") & ")"
@@ -335,13 +460,17 @@ End Sub
 
 Private Sub btnClockIn_Click()
     Dim selectedId As String
+    Dim wtCode As String
     Dim resultMsg As String
     Dim createdId As String
     Dim isSuccess As Boolean
 
     selectedId = Nz(Me.cboEmployee.Value, "")
-    isSuccess = ClockInEmployee(selectedId, resultMsg, createdId)
+    wtCode = Nz(Me.Combo9.Value, WT_NORMAL)
+    ' For normal punch, let ClockInEmployee auto-detect late ("02") unless holiday ("03") selected
+    If wtCode = WT_NORMAL Then wtCode = ""
 
+    isSuccess = ClockInEmployee(selectedId, resultMsg, createdId, wtCode)
     If isSuccess Then
         RefreshAttendanceViews
         Me.lblStatusMessage.Caption = "出勤打刻完了: " & selectedId & " (" & createdId & ")"
@@ -352,16 +481,45 @@ Private Sub btnClockIn_Click()
     End If
 End Sub
 
+' Legacy control name Command14 = Break Start button
+Private Sub Command14_Click()
+    Dim selectedId As String
+    Dim resultMsg As String
+
+    selectedId = Nz(Me.cboEmployee.Value, "")
+    If StartBreakEmployee(selectedId, resultMsg) Then
+        RefreshAttendanceViews
+        Me.lblStatusMessage.Caption = "休憩開始: " & selectedId
+        MsgBox resultMsg, vbInformation, "休憩開始"
+    Else
+        Me.lblStatusMessage.Caption = "休憩開始不可: " & resultMsg
+        MsgBox resultMsg, vbExclamation, "休憩打刻エラー"
+    End If
+End Sub
+
+' Legacy control name Command15 = Break End button
+Private Sub Command15_Click()
+    Dim selectedId As String
+    Dim resultMsg As String
+
+    selectedId = Nz(Me.cboEmployee.Value, "")
+    If EndBreakEmployee(selectedId, resultMsg) Then
+        RefreshAttendanceViews
+        Me.lblStatusMessage.Caption = "休憩終了: " & selectedId
+        MsgBox resultMsg, vbInformation, "休憩終了"
+    Else
+        Me.lblStatusMessage.Caption = "休憩終了不可: " & resultMsg
+        MsgBox resultMsg, vbExclamation, "休憩打刻エラー"
+    End If
+End Sub
+
 Private Sub btnClockOut_Click()
     Dim selectedId As String
     Dim resultMsg As String
     Dim updatedId As String
-    Dim isSuccess As Boolean
 
     selectedId = Nz(Me.cboEmployee.Value, "")
-    isSuccess = ClockOutEmployee(selectedId, resultMsg, updatedId)
-
-    If isSuccess Then
+    If ClockOutEmployee(selectedId, resultMsg, updatedId) Then
         RefreshAttendanceViews
         Me.lblStatusMessage.Caption = "退勤打刻完了: " & selectedId & " (" & updatedId & ")"
         MsgBox resultMsg, vbInformation, "退勤打刻"
@@ -373,7 +531,7 @@ End Sub
 
 Private Sub btnRefresh_Click()
     RefreshAttendanceViews
-    Me.lblStatusMessage.Caption = "最新データを再読み込みしました (" & Format$(Now(), "yyyy-mm-dd hh:nn:ss") & ")。"
+    Me.lblStatusMessage.Caption = "最新データを再読込しました (" & Format$(Now(), "yyyy-mm-dd hh:nn:ss") & ")。"
 End Sub
 
 Private Sub lstOpenAttendance_DblClick(Cancel As Integer)
@@ -381,8 +539,17 @@ Private Sub lstOpenAttendance_DblClick(Cancel As Integer)
     selectedId = Nz(Me.lstOpenAttendance.Value, "")
     If Len(selectedId) > 0 Then
         SelectEmployee selectedId
-        Me.lblStatusMessage.Caption = "未退勤一覧から従業員 " & selectedId & " を選択しました。"
+        Me.lblStatusMessage.Caption = "未退勤・休憩中一覧から " & selectedId & " を選択しました。"
     End If
+End Sub
+
+Private Sub btnBackMenu_Click()
+    If Not CurrentProject.AllForms("frmMenu").IsLoaded Then
+        DoCmd.OpenForm "frmMenu", acNormal
+    Else
+        Forms("frmMenu").SetFocus
+    End If
+    DoCmd.Close acForm, Me.Name, acSaveNo
 End Sub
 
 Private Sub btnOpenEmployees_Click()
@@ -393,9 +560,18 @@ Private Sub btnOpenAttendance_Click()
     DoCmd.OpenForm "frmAttendance", acNormal
 End Sub
 
+Private Sub btnOpenCorrection_Click()
+    Dim selectedId As String
+    Dim openArgStr As String
+    selectedId = Trim$(Nz(Me.cboEmployee.Value, ""))
+    openArgStr = "|" & selectedId & "|" & Format$(Date, "yyyy-mm-dd")
+    DoCmd.OpenForm "frmCorrectionRequest", acNormal, , , , acWindowNormal, openArgStr
+End Sub
+
 Private Sub btnViewFullHistory_Click()
     Dim selectedId As String
     Dim errMsg As String
+    Dim openArgStr As String
 
     selectedId = Nz(Me.cboEmployee.Value, "")
     If Not ValidateEmployeeSelected(selectedId, errMsg) Then
@@ -403,9 +579,18 @@ Private Sub btnViewFullHistory_Click()
         Exit Sub
     End If
 
-    DoCmd.OpenForm "frmAttendance", acNormal, , , , acWindowNormal, selectedId
+    openArgStr = selectedId & "|" & Format$(Date, "yyyy-mm") & "|DETAIL"
+    DoCmd.OpenForm "frmAttendance", acNormal, , , , acWindowNormal, openArgStr
 End Sub
 
 Private Sub btnOpenReport_Click()
-    DoCmd.OpenReport "rptAttendanceHistory", acViewPreview
+    Dim selectedId As String
+    Dim whereCond As String
+    selectedId = Trim$(Nz(Me.cboEmployee.Value, ""))
+    If Len(selectedId) > 0 Then
+        whereCond = "EmployeeID = '" & SqlEscape(selectedId) & "'"
+    Else
+        whereCond = ""
+    End If
+    DoCmd.OpenReport "rptAttendanceHistory", acViewPreview, , whereCond
 End Sub

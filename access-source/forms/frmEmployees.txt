@@ -12,10 +12,10 @@ Begin Form
     PictureAlignment =2
     DatasheetGridlinesBehavior =3
     GridY =10
-    Width =13200
+    Width =15000
     DatasheetFontHeight =11
-    ItemSuffix =18
-    Caption ="従業員一覧"
+    ItemSuffix =22
+    Caption ="従業員マスタ一覧 (frmEmployees)"
     RecordSource ="qryEmployees"
     OnLoad ="[Event Procedure]"
     AllowAdditions = NotDefault
@@ -23,32 +23,32 @@ Begin Form
     AllowEdits = NotDefault
     Begin
         Begin FormHeader
-            Height =1680
+            Height =1740
             BackColor =15921906
             Name ="FormHeader"
             Begin
                 Begin Label
                     Left =360
-                    Top =200
-                    Width =3600
+                    Top =180
+                    Width =4800
                     Height =440
                     FontSize =14
                     FontWeight =700
                     Name ="lblTitle"
-                    Caption ="従業員一覧"
+                    Caption ="従業員マスタ・勤務パターン一覧"
                 End
                 Begin Label
                     Left =360
                     Top =760
-                    Width =1560
+                    Width =1320
                     Height =300
                     Name ="lblFilterDepartment"
                     Caption ="部署絞り込み:"
                 End
                 Begin ComboBox
-                    Left =2040
+                    Left =1760
                     Top =740
-                    Width =2800
+                    Width =2400
                     Height =340
                     ColumnCount =1
                     BoundColumn =1
@@ -57,8 +57,25 @@ Begin Form
                     Name ="cboFilterDepartment"
                     AfterUpdate ="[Event Procedure]"
                 End
+                Begin CheckBox
+                    Left =4440
+                    Top =780
+                    Width =300
+                    Height =300
+                    DefaultValue ="0"
+                    Name ="Check31"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =4800
+                    Top =760
+                    Width =2200
+                    Height =300
+                    Name ="lblActiveOnly"
+                    Caption ="在籍中(Active)のみ表示"
+                End
                 Begin CommandButton
-                    Left =5040
+                    Left =7200
                     Top =720
                     Width =1800
                     Height =380
@@ -67,54 +84,72 @@ Begin Form
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =10440
-                    Top =220
+                    Left =12240
+                    Top =200
                     Width =2400
                     Height =440
                     Name ="btnBackToMain"
-                    Caption ="メイン画面へ戻る"
+                    Caption ="打刻画面へ戻る"
                     OnClick ="[Event Procedure]"
                 End
                 Begin Label
                     Left =360
-                    Top =1280
-                    Width =1400
+                    Top =1320
+                    Width =1140
                     Height =300
                     FontWeight =700
                     Name ="lblHdrEmployeeID"
-                    Caption ="従業員ID"
+                    Caption ="社員ID"
                 End
                 Begin Label
-                    Left =1920
-                    Top =1280
-                    Width =2400
+                    Left =1620
+                    Top =1320
+                    Width =1800
                     Height =300
                     FontWeight =700
                     Name ="lblHdrEmployeeName"
                     Caption ="氏名"
                 End
                 Begin Label
-                    Left =4500
-                    Top =1280
-                    Width =2000
+                    Left =3540
+                    Top =1320
+                    Width =1400
                     Height =300
                     FontWeight =700
                     Name ="lblHdrDepartment"
-                    Caption ="所属部署"
+                    Caption ="部署"
                 End
                 Begin Label
-                    Left =6660
-                    Top =1280
-                    Width =1500
+                    Left =5060
+                    Top =1320
+                    Width =2600
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrPattern"
+                    Caption ="勤務パターン"
+                End
+                Begin Label
+                    Left =7780
+                    Top =1320
+                    Width =1140
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrRole"
+                    Caption ="権限"
+                End
+                Begin Label
+                    Left =9040
+                    Top =1320
+                    Width =1140
                     Height =300
                     FontWeight =700
                     Name ="lblHdrStatus"
-                    Caption ="ステータス"
+                    Caption ="在籍状態"
                 End
                 Begin Label
-                    Left =8400
-                    Top =1280
-                    Width =4440
+                    Left =10360
+                    Top =1320
+                    Width =4280
                     Height =300
                     FontWeight =700
                     Name ="lblHdrActions"
@@ -131,54 +166,72 @@ Begin Form
                     Locked = NotDefault
                     Left =360
                     Top =100
-                    Width =1400
+                    Width =1140
                     Height =340
                     Name ="txtEmployeeID"
                     ControlSource ="EmployeeID"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =1920
+                    Left =1620
                     Top =100
-                    Width =2400
+                    Width =1800
                     Height =340
                     Name ="txtEmployeeName"
                     ControlSource ="EmployeeName"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =4500
+                    Left =3540
                     Top =100
-                    Width =2000
+                    Width =1400
                     Height =340
                     Name ="txtDepartment"
                     ControlSource ="Department"
                 End
                 Begin TextBox
                     Locked = NotDefault
-                    Left =6660
+                    Left =5060
                     Top =100
-                    Width =1500
+                    Width =2600
+                    Height =340
+                    Name ="txtPatternName"
+                    ControlSource ="PatternName"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =7780
+                    Top =100
+                    Width =1140
+                    Height =340
+                    Name ="txtRole"
+                    ControlSource ="Role"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =9040
+                    Top =100
+                    Width =1140
                     Height =340
                     Name ="txtStatus"
                     ControlSource ="Status"
                 End
                 Begin CommandButton
-                    Left =8400
+                    Left =10360
                     Top =90
-                    Width =2160
+                    Width =2040
                     Height =360
                     Name ="btnSelectForPunch"
                     Caption ="選択して打刻へ"
                     OnClick ="[Event Procedure]"
                 End
                 Begin CommandButton
-                    Left =10740
+                    Left =12560
                     Top =90
-                    Width =2100
+                    Width =2080
                     Height =360
                     Name ="btnShowHistory"
-                    Caption ="勤怠履歴を表示"
+                    Caption ="月次出勤簿"
                     OnClick ="[Event Procedure]"
                 End
             End
@@ -218,28 +271,48 @@ Option Compare Database
 Option Explicit
 
 Private Sub Form_Load()
-    Me.Filter = ""
-    Me.FilterOn = False
     Me.cboFilterDepartment.Value = Null
+    Me.Check31.Value = False
+    ApplyEmployeeFilter
+End Sub
+
+Private Sub ApplyEmployeeFilter()
+    Dim parts As String
+    Dim dept As String
+
+    parts = ""
+    dept = Trim$(Nz(Me.cboFilterDepartment.Value, ""))
+    If Len(dept) > 0 Then
+        parts = "Department = '" & SqlEscape(dept) & "'"
+    End If
+
+    If Nz(Me.Check31.Value, False) = True Then
+        If Len(parts) > 0 Then parts = parts & " AND "
+        parts = parts & "Status = '" & EMP_STATUS_ACTIVE & "'"
+    End If
+
+    If Len(parts) > 0 Then
+        Me.Filter = parts
+        Me.FilterOn = True
+    Else
+        Me.Filter = ""
+        Me.FilterOn = False
+    End If
 End Sub
 
 Private Sub cboFilterDepartment_AfterUpdate()
-    Dim selectedDept As String
+    ApplyEmployeeFilter
+End Sub
 
-    selectedDept = Trim$(Nz(Me.cboFilterDepartment.Value, ""))
-    If Len(selectedDept) = 0 Then
-        Me.Filter = ""
-        Me.FilterOn = False
-    Else
-        Me.Filter = "Department = '" & SqlEscape(selectedDept) & "'"
-        Me.FilterOn = True
-    End If
+' Legacy control Check31 = Active employees only checkbox
+Private Sub Check31_AfterUpdate()
+    ApplyEmployeeFilter
 End Sub
 
 Private Sub btnClearFilter_Click()
     Me.cboFilterDepartment.Value = Null
-    Me.Filter = ""
-    Me.FilterOn = False
+    Me.Check31.Value = False
+    ApplyEmployeeFilter
 End Sub
 
 Private Sub btnSelectForPunch_Click()
@@ -253,22 +326,22 @@ Private Sub btnSelectForPunch_Click()
     End If
 
     If Not CurrentProject.AllForms("frmMain").IsLoaded Then
-        DoCmd.OpenForm "frmMain", acNormal
+        DoCmd.OpenForm "frmMain", acNormal, , , , acWindowNormal, empId
+    Else
+        Forms("frmMain").SelectEmployee empId
+        Forms("frmMain").SetFocus
     End If
-
-    Forms("frmMain").SelectEmployee empId
-    Forms("frmMain").SetFocus
 End Sub
 
 Private Sub btnShowHistory_Click()
     Dim empId As String
+    Dim argStr As String
 
     empId = Nz(Me.txtEmployeeID.Value, "")
-    If Len(Trim$(empId)) = 0 Then
-        Exit Sub
-    End If
+    If Len(Trim$(empId)) = 0 Then Exit Sub
 
-    DoCmd.OpenForm "frmAttendance", acNormal, , , , acWindowNormal, empId
+    argStr = empId & "|" & Format$(Date, "yyyy-mm") & "|DETAIL"
+    DoCmd.OpenForm "frmAttendance", acNormal, , , , acWindowNormal, argStr
 End Sub
 
 Private Sub btnBackToMain_Click()

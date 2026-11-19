@@ -1,0 +1,408 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =0
+    ViewsAllowed =1
+    ScrollBars =2
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =15200
+    DatasheetFontHeight =11
+    ItemSuffix =30
+    Caption ="打刻修正申請・上長承認画面 (frmCorrectionRequest)"
+    RecordSource =""
+    OnLoad ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =1080
+            BackColor =15921906
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =220
+                    Width =6600
+                    Height =460
+                    FontSize =14
+                    FontWeight =700
+                    Name ="lblTitle"
+                    Caption ="打刻修正申請・上長承認"
+                End
+                Begin Label
+                    Left =7400
+                    Top =280
+                    Width =4600
+                    Height =320
+                    Name ="lblCurrentOperator"
+                    Caption ="操作者: -"
+                End
+                Begin CommandButton
+                    Left =12400
+                    Top =220
+                    Width =2400
+                    Height =440
+                    Name ="btnCloseForm"
+                    Caption ="閉じる"
+                    OnClick ="[Event Procedure]"
+                End
+            End
+        End
+        Begin Section
+            Height =8600
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =220
+                    Width =6000
+                    Height =320
+                    FontWeight =700
+                    Name ="lblSecNew"
+                    Caption ="1. 打刻修正・休暇申請の新規登録"
+                End
+                Begin Label
+                    Left =360
+                    Top =660
+                    Width =1320
+                    Height =300
+                    Name ="lblAttId"
+                    Caption ="対象勤怠ID:"
+                End
+                Begin TextBox
+                    Left =1760
+                    Top =640
+                    Width =2400
+                    Height =340
+                    Name ="txtAttendanceID"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =4400
+                    Top =660
+                    Width =1080
+                    Height =300
+                    Name ="lblEmp"
+                    Caption ="申請従業員:"
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    ColumnCount =2
+                    Left =5560
+                    Top =640
+                    Width =3200
+                    Height =340
+                    BoundColumn =1
+                    ColumnWidths ="1100;2100"
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT EmployeeID, EmployeeName FROM qryEmployees WHERE Status = 'Active' ORDER BY EmployeeID;"
+                    Name ="cboReqEmployee"
+                End
+                Begin Label
+                    Left =9040
+                    Top =660
+                    Width =1140
+                    Height =300
+                    Name ="lblTargetDate"
+                    Caption ="対象勤務日:"
+                End
+                Begin TextBox
+                    Left =10260
+                    Top =640
+                    Width =1800
+                    Height =340
+                    Name ="txtTargetDate"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =360
+                    Top =1180
+                    Width =1320
+                    Height =300
+                    Name ="lblReqIn"
+                    Caption ="修正後出勤:"
+                End
+                Begin TextBox
+                    Left =1760
+                    Top =1160
+                    Width =2400
+                    Height =340
+                    Name ="txtReqClockIn"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =4400
+                    Top =1180
+                    Width =1080
+                    Height =300
+                    Name ="lblReqOut"
+                    Caption ="修正後退勤:"
+                End
+                Begin TextBox
+                    Left =5560
+                    Top =1160
+                    Width =2400
+                    Height =340
+                    Name ="txtReqClockOut"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =8200
+                    Top =1180
+                    Width =1080
+                    Height =300
+                    Name ="lblReqBreak"
+                    Caption ="休憩(分):"
+                End
+                Begin TextBox
+                    Left =9360
+                    Top =1160
+                    Width =1080
+                    Height =340
+                    Name ="txtReqBreakMin"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =10680
+                    Top =1180
+                    Width =1080
+                    Height =300
+                    Name ="lblReqWT"
+                    Caption ="勤務区分:"
+                End
+                Begin ComboBox
+                    LimitToList = NotDefault
+                    ColumnCount =2
+                    Left =11820
+                    Top =1160
+                    Width =2980
+                    Height =340
+                    BoundColumn =1
+                    ColumnWidths ="600;2300"
+                    RowSourceType ="Value List"
+                    RowSource ="\"01\";\"通常出勤\";\"02\";\"遅刻・早退\";\"03\";\"休日出勤\";\"04\";\"有給休暇\";\"05\";\"半休\";\"09\";\"欠勤\""
+                    DefaultValue ="\"01\""
+                    Name ="cboReqWorkType"
+                End
+                Begin Label
+                    Left =360
+                    Top =1700
+                    Width =1320
+                    Height =300
+                    Name ="lblReason"
+                    Caption ="申請理由:"
+                End
+                Begin TextBox
+                    Left =1760
+                    Top =1680
+                    Width =10200
+                    Height =340
+                    Name ="txtReason"
+                    ControlSource =""
+                End
+                Begin CommandButton
+                    Left =12240
+                    Top =1640
+                    Width =2560
+                    Height =440
+                    FontWeight =700
+                    Name ="btnSubmitRequest"
+                    Caption ="修正申請を登録"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =2480
+                    Width =8400
+                    Height =320
+                    FontWeight =700
+                    Name ="lblSecPending"
+                    Caption ="2. 未承認申請一覧（Manager / Admin のみ承認・差戻可能。承認時は締済月も特例反映）"
+                End
+                Begin ListBox
+                    ColumnCount =9
+                    ColumnHeads = NotDefault
+                    Left =360
+                    Top =2900
+                    Width =14440
+                    Height =4400
+                    BoundColumn =1
+                    ColumnWidths ="1800;1700;900;1400;1200;1900;1900;800;2800"
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT RequestID, AttendanceID, EmployeeID, EmployeeName, TargetDate, ReqClockIn, ReqClockOut, ReqWorkTypeLabel, Reason FROM qryPendingCorrections;"
+                    Name ="lstPendingRequests"
+                End
+                Begin CommandButton
+                    Left =360
+                    Top =7560
+                    Width =2640
+                    Height =540
+                    FontWeight =700
+                    Name ="btnApprove"
+                    Caption ="選択申請を承認・反映"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =3240
+                    Top =7560
+                    Width =2200
+                    Height =540
+                    Name ="btnReject"
+                    Caption ="選択申請を差戻"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =12400
+                    Top =7560
+                    Width =2400
+                    Height =540
+                    Name ="btnReloadPending"
+                    Caption ="一覧再読込"
+                    OnClick ="[Event Procedure]"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =540
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =120
+                    Width =14440
+                    Height =300
+                    Name ="lblResultInfo"
+                    Caption ="未承認申請を選択して承認または差戻を実行してください。"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Dim argAttId As String
+    Dim argEmpId As String
+    Dim argDate As String
+    Dim activeUser As String
+    Dim canApprove As Boolean
+
+    activeUser = GetActiveUserID()
+    canApprove = IsManagerOrAdmin(activeUser)
+
+    Me.lblCurrentOperator.Caption = "操作者: " & activeUser & " (" & GetActiveUserRole() & ")"
+    Me.btnApprove.Enabled = canApprove
+    Me.btnReject.Enabled = canApprove
+
+    ' Parse pipe-delimited OpenArgs: "AttendanceID|EmployeeID|TargetDate"
+    argAttId = ParseOpenArgToken(Me.OpenArgs, 0)
+    argEmpId = ParseOpenArgToken(Me.OpenArgs, 1)
+    argDate = ParseOpenArgToken(Me.OpenArgs, 2)
+
+    Me.txtAttendanceID.Value = argAttId
+    If Len(argEmpId) > 0 Then
+        Me.cboReqEmployee.Value = argEmpId
+    Else
+        Me.cboReqEmployee.Value = activeUser
+    End If
+
+    If Len(argDate) > 0 Then
+        Me.txtTargetDate.Value = argDate
+    Else
+        Me.txtTargetDate.Value = Format$(Date, "yyyy-mm-dd")
+    End If
+
+    Me.cboReqWorkType.Value = WT_NORMAL
+    Me.txtReqBreakMin.Value = "60"
+
+    ' Pre-fill existing timestamps when AttendanceID is supplied
+    If Len(argAttId) > 0 Then
+        Me.txtReqClockIn.Value = Nz(DLookup("ClockIn", "AttendanceRecords", "AttendanceID = '" & SqlEscape(argAttId) & "'"), "")
+        Me.txtReqClockOut.Value = Nz(DLookup("ClockOut", "AttendanceRecords", "AttendanceID = '" & SqlEscape(argAttId) & "'"), "")
+    End If
+
+    Me.lstPendingRequests.Requery
+End Sub
+
+Private Sub btnSubmitRequest_Click()
+    Dim msg As String
+    Dim newReqId As String
+    Dim ok As Boolean
+
+    ok = SubmitCorrectionRequest( _
+        Nz(Me.txtAttendanceID.Value, ""), _
+        Nz(Me.cboReqEmployee.Value, ""), _
+        Nz(Me.txtTargetDate.Value, ""), _
+        Nz(Me.txtReqClockIn.Value, ""), _
+        Nz(Me.txtReqClockOut.Value, ""), _
+        Nz(Me.txtReqBreakMin.Value, ""), _
+        Nz(Me.cboReqWorkType.Value, WT_NORMAL), _
+        Nz(Me.txtReason.Value, ""), _
+        msg, _
+        newReqId)
+
+    If ok Then
+        Me.txtReason.Value = ""
+        Me.lstPendingRequests.Requery
+        Me.lblResultInfo.Caption = msg
+        MsgBox msg, vbInformation, "修正申請完了"
+    Else
+        Me.lblResultInfo.Caption = msg
+        MsgBox msg, vbExclamation, "入力エラー"
+    End If
+End Sub
+
+Private Sub btnApprove_Click()
+    ProcessSelectedRequest APPR_APPROVED
+End Sub
+
+Private Sub btnReject_Click()
+    ProcessSelectedRequest APPR_REJECTED
+End Sub
+
+Private Sub ProcessSelectedRequest(ByVal targetStatus As String)
+    Dim reqId As String
+    Dim approverId As String
+    Dim msg As String
+
+    reqId = Trim$(Nz(Me.lstPendingRequests.Value, ""))
+    If Len(reqId) = 0 Then
+        MsgBox "処理対象の未承認申請を一覧から選択してください。", vbExclamation, "未選択"
+        Exit Sub
+    End If
+
+    approverId = GetActiveUserID()
+    If ApproveOrRejectCorrection(reqId, approverId, targetStatus, msg) Then
+        Me.lstPendingRequests.Requery
+        Me.lblResultInfo.Caption = msg
+        MsgBox msg, vbInformation, "承認処理完了"
+    Else
+        Me.lblResultInfo.Caption = msg
+        MsgBox msg, vbExclamation, "承認処理エラー"
+    End If
+End Sub
+
+Private Sub btnReloadPending_Click()
+    Me.lstPendingRequests.Requery
+    Me.lblResultInfo.Caption = "未承認申請一覧を再読込しました。"
+End Sub
+
+Private Sub btnCloseForm_Click()
+    DoCmd.Close acForm, Me.Name, acSaveNo
+End Sub

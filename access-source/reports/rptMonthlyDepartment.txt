@@ -1,0 +1,316 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Report
+    LayoutForPrint = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DateGrouping =1
+    GrpKeepTogether =1
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =12600
+    DatasheetFontHeight =11
+    ItemSuffix =20
+    Caption ="部署別 残業・勤怠サマリーレポート"
+    RecordSource ="qryMonthlySummary"
+    OnNoData ="[Event Procedure]"
+    Begin
+        Begin GroupLevel
+            GroupHeader = NotDefault
+            GroupFooter = NotDefault
+            ControlSource ="Department"
+        End
+        Begin GroupLevel
+            SortOrder = NotDefault
+            ControlSource ="WorkYM"
+        End
+        Begin GroupLevel
+            ControlSource ="EmployeeID"
+        End
+        Begin ReportHeader
+            Height =900
+            BackColor =16777215
+            Name ="ReportHeader"
+            Begin
+                Begin Label
+                    Left =240
+                    Top =200
+                    Width =7200
+                    Height =460
+                    FontSize =15
+                    FontWeight =700
+                    Name ="lblTitle"
+                    Caption ="部署別 月次残業・勤怠サマリーレポート"
+                End
+            End
+        End
+        Begin PageHeader
+            Height =480
+            BackColor =15921906
+            Name ="PageHeaderSection"
+            Begin
+                Begin Label
+                    Left =240
+                    Top =100
+                    Width =1100
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHYM"
+                    Caption ="年月"
+                End
+                Begin Label
+                    Left =1440
+                    Top =100
+                    Width =1100
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHEmpId"
+                    Caption ="社員ID"
+                End
+                Begin Label
+                    Left =2640
+                    Top =100
+                    Width =1900
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHEmpName"
+                    Caption ="氏名"
+                End
+                Begin Label
+                    Left =4640
+                    Top =100
+                    Width =900
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHDays"
+                    Caption ="出勤日"
+                End
+                Begin Label
+                    Left =5640
+                    Top =100
+                    Width =1200
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHWork"
+                    Caption ="総実働"
+                End
+                Begin Label
+                    Left =6940
+                    Top =100
+                    Width =1200
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHOT"
+                    Caption ="総残業"
+                End
+                Begin Label
+                    Left =8240
+                    Top =100
+                    Width =1200
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHLN"
+                    Caption ="総深夜"
+                End
+                Begin Label
+                    Left =9540
+                    Top =100
+                    Width =1100
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHLeave"
+                    Caption ="有給日"
+                End
+                Begin Label
+                    Left =10740
+                    Top =100
+                    Width =1620
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHAlert"
+                    Caption ="36協定警告"
+                End
+            End
+        End
+        Begin BreakHeader
+            KeepTogether = NotDefault
+            Height =480
+            BackColor =16448250
+            Name ="GroupHeader0"
+            Begin
+                Begin TextBox
+                    Left =240
+                    Top =80
+                    Width =3600
+                    Height =320
+                    FontWeight =700
+                    Name ="txtDeptHeader"
+                    ControlSource ="Department"
+                End
+            End
+        End
+        Begin Section
+            KeepTogether = NotDefault
+            Height =440
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Left =240
+                    Top =60
+                    Width =1100
+                    Height =320
+                    Name ="txtWorkYM"
+                    ControlSource ="WorkYM"
+                End
+                Begin TextBox
+                    Left =1440
+                    Top =60
+                    Width =1100
+                    Height =320
+                    Name ="txtEmployeeID"
+                    ControlSource ="EmployeeID"
+                End
+                Begin TextBox
+                    Left =2640
+                    Top =60
+                    Width =1900
+                    Height =320
+                    Name ="txtEmployeeName"
+                    ControlSource ="EmployeeName"
+                End
+                Begin TextBox
+                    Left =4640
+                    Top =60
+                    Width =900
+                    Height =320
+                    Name ="txtWorkDays"
+                    ControlSource ="WorkDays"
+                End
+                Begin TextBox
+                    Left =5640
+                    Top =60
+                    Width =1200
+                    Height =320
+                    Name ="txtTotalWork"
+                    ControlSource ="=FormatMinutesHHMM([TotalWorkMin])"
+                End
+                Begin TextBox
+                    Left =6940
+                    Top =60
+                    Width =1200
+                    Height =320
+                    Name ="txtTotalOT"
+                    ControlSource ="=FormatMinutesHHMM([TotalOvertimeMin])"
+                End
+                Begin TextBox
+                    Left =8240
+                    Top =60
+                    Width =1200
+                    Height =320
+                    Name ="txtTotalLN"
+                    ControlSource ="=FormatMinutesHHMM([TotalLateNightMin])"
+                End
+                Begin TextBox
+                    Left =9540
+                    Top =60
+                    Width =1100
+                    Height =320
+                    Name ="txtPaidLeaveDays"
+                    ControlSource ="PaidLeaveDays"
+                End
+                Begin TextBox
+                    Left =10740
+                    Top =60
+                    Width =1620
+                    Height =320
+                    Name ="txtOvertimeAlert"
+                    ControlSource ="=IIf([TotalOvertimeMin]>=2700,\"要注意(45h超)\",IIf([TotalOvertimeMin]>=1800,\"注意(30h超)\",\"\"))"
+                End
+            End
+        End
+        Begin BreakFooter
+            KeepTogether = NotDefault
+            Height =500
+            BackColor =16777215
+            Name ="GroupFooter0"
+            Begin
+                Begin Label
+                    Left =4400
+                    Top =100
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblDeptTotal"
+                    Caption ="部署計 (残業 / 深夜):"
+                End
+                Begin TextBox
+                    Left =6940
+                    Top =100
+                    Width =1200
+                    Height =300
+                    FontWeight =700
+                    Name ="txtDeptOT"
+                    ControlSource ="=FormatMinutesHHMM(Sum([TotalOvertimeMin]))"
+                End
+                Begin TextBox
+                    Left =8240
+                    Top =100
+                    Width =1200
+                    Height =300
+                    FontWeight =700
+                    Name ="txtDeptLN"
+                    ControlSource ="=FormatMinutesHHMM(Sum([TotalLateNightMin]))"
+                End
+            End
+        End
+        Begin ReportFooter
+            Height =560
+            BackColor =15921906
+            Name ="ReportFooter"
+            Begin
+                Begin Label
+                    Left =4400
+                    Top =120
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblAllTotal"
+                    Caption ="全社計 (残業 / 深夜):"
+                End
+                Begin TextBox
+                    Left =6940
+                    Top =120
+                    Width =1200
+                    Height =300
+                    FontWeight =700
+                    Name ="txtAllOT"
+                    ControlSource ="=FormatMinutesHHMM(Sum([TotalOvertimeMin]))"
+                End
+                Begin TextBox
+                    Left =8240
+                    Top =120
+                    Width =1200
+                    Height =300
+                    FontWeight =700
+                    Name ="txtAllLN"
+                    ControlSource ="=FormatMinutesHHMM(Sum([TotalLateNightMin]))"
+                End
+            End
+        End
+    End
+End
+CodeBehindReport
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Report_NoData(Cancel As Integer)
+    MsgBox "部署別サマリーの対象データがありません。", vbInformation, "部署別残業サマリー"
+    Cancel = True
+End Sub

@@ -4,18 +4,14 @@ Option Explicit
 
 ' =============================================================================
 ' Module: modValidation
-' Purpose: Input validation and attendance state transition rules
+' Purpose: Input validation, attendance state transition guards, monthly
+'          closing lock checks, and correction request validation.
+' History:
+'   2011/04/01 山本: 初期作成
+'   2016/02/12 佐藤: 休憩開始・終了(OnBreak)の状態遷移チェックを追加
+'   2018/11/20 高橋: 月次締め済(CloseFlag='1')の打刻・直接編集ブロックを追加
 ' =============================================================================
 
-Public Const EMPLOYEE_STATUS_ACTIVE As String = "Active"
-Public Const ATTENDANCE_STATUS_WORKING As String = "Working"
-
-' Escape single quotes for Access SQL / Domain Aggregate criteria strings.
-Public Function SqlEscape(ByVal rawValue As String) As String
-    SqlEscape = Replace(rawValue, "'", "''")
-End Function
-
-' Verify that an EmployeeID has been selected.
 Public Function ValidateEmployeeSelected(ByVal employeeId As String, ByRef errMessage As String) As Boolean
     If Len(Trim$(employeeId)) = 0 Then
         errMessage = "従業員を選択してください。"
@@ -27,7 +23,6 @@ Public Function ValidateEmployeeSelected(ByVal employeeId As String, ByRef errMe
     ValidateEmployeeSelected = True
 End Function
 
-' Verify that the specified employee exists and has Status = "Active".
 Public Function ValidateEmployeeActive(ByVal employeeId As String, ByRef errMessage As String) As Boolean
     Dim empStatus As Variant
     Dim criteria As String
@@ -41,8 +36,8 @@ Public Function ValidateEmployeeActive(ByVal employeeId As String, ByRef errMess
         Exit Function
     End If
 
-    If CStr(empStatus) <> EMPLOYEE_STATUS_ACTIVE Then
-        errMessage = "在籍中（Active）ではない従業員は打刻できません (" & employeeId & ")。"
+    If CStr(empStatus) <> EMP_STATUS_ACTIVE Then
+        errMessage = "在籍中（Active）ではない従業員は操作できません (" & employeeId & ")。"
         ValidateEmployeeActive = False
         Exit Function
     End If
@@ -51,13 +46,27 @@ Public Function ValidateEmployeeActive(ByVal employeeId As String, ByRef errMess
     ValidateEmployeeActive = True
 End Function
 
-' Return True if the employee has an unclosed ("Working" and blank ClockOut) record.
-' When workDate is provided ("YYYY-MM-DD"), checks specifically for that date.
+' Return True if targetYM ("YYYY-MM") is closed (CloseFlag = '1') in MonthlyClosings.
+Public Function IsMonthClosed(ByVal targetYM As String) As Boolean
+    Dim flagVal As Variant
+    Dim cleanYM As String
+
+    cleanYM = Left$(Trim$(targetYM), 7)
+    If Len(cleanYM) <> 7 Then
+        IsMonthClosed = False
+        Exit Function
+    End If
+
+    flagVal = DLookup("CloseFlag", "MonthlyClosings", "TargetYM = '" & SqlEscape(cleanYM) & "'")
+    IsMonthClosed = (Trim$(Nz(flagVal, CLOSE_OPEN)) = CLOSE_LOCKED)
+End Function
+
+' Return True if employee has an open record (Working or OnBreak with blank ClockOut).
 Public Function HasOpenAttendance(ByVal employeeId As String, Optional ByVal workDate As String = "") As Boolean
     Dim criteria As String
 
     criteria = "EmployeeID = '" & SqlEscape(Trim$(employeeId)) & "' " & _
-               "AND Status = '" & ATTENDANCE_STATUS_WORKING & "' " & _
+               "AND Status IN ('" & ATT_STATUS_WORKING & "', '" & ATT_STATUS_ONBREAK & "') " & _
                "AND (ClockOut IS NULL OR ClockOut = '')"
 
     If Len(Trim$(workDate)) > 0 Then
@@ -67,10 +76,24 @@ Public Function HasOpenAttendance(ByVal employeeId As String, Optional ByVal wor
     HasOpenAttendance = (DCount("AttendanceID", "AttendanceRecords", criteria) > 0)
 End Function
 
-' Validate all preconditions before executing Clock-In.
+' Return True if employee is currently in OnBreak state.
+Public Function HasOnBreakAttendance(ByVal employeeId As String) As Boolean
+    Dim criteria As String
+
+    criteria = "EmployeeID = '" & SqlEscape(Trim$(employeeId)) & "' " & _
+               "AND Status = '" & ATT_STATUS_ONBREAK & "' " & _
+               "AND (ClockOut IS NULL OR ClockOut = '')"
+
+    HasOnBreakAttendance = (DCount("AttendanceID", "AttendanceRecords", criteria) > 0)
+End Function
+
+' Validate preconditions before Clock-In.
 Public Function ValidateClockIn(ByVal employeeId As String, ByVal workDate As String, ByRef errMessage As String) As Boolean
     Dim normalizedId As String
+    Dim targetYM As String
+
     normalizedId = Trim$(employeeId)
+    targetYM = Left$(Trim$(workDate), 7)
 
     If Not ValidateEmployeeSelected(normalizedId, errMessage) Then
         ValidateClockIn = False
@@ -82,16 +105,20 @@ Public Function ValidateClockIn(ByVal employeeId As String, ByVal workDate As St
         Exit Function
     End If
 
-    ' Prevent duplicate clock-in on the same date while still clocked in.
+    If IsMonthClosed(targetYM) Then
+        errMessage = "対象月 (" & targetYM & ") は既に月次締済のため、直接打刻できません。修正申請を利用してください。"
+        ValidateClockIn = False
+        Exit Function
+    End If
+
     If HasOpenAttendance(normalizedId, workDate) Then
         errMessage = "同日 (" & workDate & ") に未退勤の出勤記録が既に存在します。重複して出勤打刻はできません。"
         ValidateClockIn = False
         Exit Function
     End If
 
-    ' Prevent opening a second concurrent working shift if a prior day remains unclosed.
     If HasOpenAttendance(normalizedId) Then
-        errMessage = "未退勤の出勤記録が残っています。先に退勤打刻を完了してください。"
+        errMessage = "未退勤または休憩中の記録が残っています。先に退勤打刻を完了してください。"
         ValidateClockIn = False
         Exit Function
     End If
@@ -100,11 +127,79 @@ Public Function ValidateClockIn(ByVal employeeId As String, ByVal workDate As St
     ValidateClockIn = True
 End Function
 
-' Validate all preconditions before executing Clock-Out.
+' Validate preconditions before Break Start (must be Working, not OnBreak).
+Public Function ValidateBreakStart(ByVal employeeId As String, ByVal workDate As String, ByRef errMessage As String) As Boolean
+    Dim normalizedId As String
+
+    normalizedId = Trim$(employeeId)
+    If Not ValidateEmployeeSelected(normalizedId, errMessage) Then
+        ValidateBreakStart = False
+        Exit Function
+    End If
+
+    If Not ValidateEmployeeActive(normalizedId, errMessage) Then
+        ValidateBreakStart = False
+        Exit Function
+    End If
+
+    If IsMonthClosed(Left$(Trim$(workDate), 7)) Then
+        errMessage = "対象月は月次締済のため休憩打刻できません。"
+        ValidateBreakStart = False
+        Exit Function
+    End If
+
+    If HasOnBreakAttendance(normalizedId) Then
+        errMessage = "既に休憩中です。先に休憩終了を打刻してください。"
+        ValidateBreakStart = False
+        Exit Function
+    End If
+
+    If Not HasOpenAttendance(normalizedId) Then
+        errMessage = "出勤中の記録が見つかりません。先に出勤打刻を行ってください。"
+        ValidateBreakStart = False
+        Exit Function
+    End If
+
+    errMessage = ""
+    ValidateBreakStart = True
+End Function
+
+' Validate preconditions before Break End (must be OnBreak).
+Public Function ValidateBreakEnd(ByVal employeeId As String, ByVal workDate As String, ByRef errMessage As String) As Boolean
+    Dim normalizedId As String
+
+    normalizedId = Trim$(employeeId)
+    If Not ValidateEmployeeSelected(normalizedId, errMessage) Then
+        ValidateBreakEnd = False
+        Exit Function
+    End If
+
+    If Not ValidateEmployeeActive(normalizedId, errMessage) Then
+        ValidateBreakEnd = False
+        Exit Function
+    End If
+
+    If IsMonthClosed(Left$(Trim$(workDate), 7)) Then
+        errMessage = "対象月は月次締済のため休憩終了打刻できません。"
+        ValidateBreakEnd = False
+        Exit Function
+    End If
+
+    If Not HasOnBreakAttendance(normalizedId) Then
+        errMessage = "休憩中の記録が見つかりません。先に休憩開始を打刻してください。"
+        ValidateBreakEnd = False
+        Exit Function
+    End If
+
+    errMessage = ""
+    ValidateBreakEnd = True
+End Function
+
+' Validate preconditions before Clock-Out.
 Public Function ValidateClockOut(ByVal employeeId As String, ByRef errMessage As String) As Boolean
     Dim normalizedId As String
-    normalizedId = Trim$(employeeId)
 
+    normalizedId = Trim$(employeeId)
     If Not ValidateEmployeeSelected(normalizedId, errMessage) Then
         ValidateClockOut = False
         Exit Function
@@ -115,7 +210,12 @@ Public Function ValidateClockOut(ByVal employeeId As String, ByRef errMessage As
         Exit Function
     End If
 
-    ' Require an existing open attendance record before allowing clock-out.
+    If HasOnBreakAttendance(normalizedId) Then
+        errMessage = "現在休憩中です。退勤打刻の前に「休憩終了」を打刻してください。"
+        ValidateClockOut = False
+        Exit Function
+    End If
+
     If Not HasOpenAttendance(normalizedId) Then
         errMessage = "未退勤の出勤記録が見つかりません。先に出勤打刻を行ってください。"
         ValidateClockOut = False
@@ -126,7 +226,112 @@ Public Function ValidateClockOut(ByVal employeeId As String, ByRef errMessage As
     ValidateClockOut = True
 End Function
 
-' Validate optional WorkDate filter input ("YYYY-MM-DD"). Empty string is allowed.
+' Validate correction request submission input.
+Public Function ValidateCorrectionInput( _
+    ByVal employeeId As String, _
+    ByVal targetDate As String, _
+    ByVal reqClockIn As String, _
+    ByVal reqClockOut As String, _
+    ByVal reqBreakMin As String, _
+    ByVal reqWorkType As String, _
+    ByVal reasonText As String, _
+    ByRef errMessage As String) As Boolean
+
+    If Not ValidateEmployeeSelected(employeeId, errMessage) Then
+        ValidateCorrectionInput = False
+        Exit Function
+    End If
+
+    If Not ValidateEmployeeActive(employeeId, errMessage) Then
+        ValidateCorrectionInput = False
+        Exit Function
+    End If
+
+    If Len(Trim$(targetDate)) = 0 Or Not ValidateDateFilter(targetDate, errMessage) Then
+        If Len(errMessage) = 0 Then errMessage = "対象日を入力してください (YYYY-MM-DD)。"
+        ValidateCorrectionInput = False
+        Exit Function
+    End If
+
+    If Len(Trim$(reasonText)) = 0 Then
+        errMessage = "申請理由を入力してください。"
+        ValidateCorrectionInput = False
+        Exit Function
+    End If
+
+    Select Case Trim$(reqWorkType)
+        Case WT_NORMAL, WT_LATE_EARLY, WT_HOLIDAY, WT_PAID_LEAVE, WT_HALF_LEAVE, WT_ABSENT
+            ' valid legacy code
+        Case Else
+            errMessage = "勤務区分コードが不正です (" & reqWorkType & ")。"
+            ValidateCorrectionInput = False
+            Exit Function
+    End Select
+
+    If reqWorkType <> WT_PAID_LEAVE And reqWorkType <> WT_ABSENT Then
+        If Len(Trim$(reqClockIn)) < 16 Or Not IsDate(reqClockIn) Then
+            errMessage = "修正後出勤時刻は YYYY-MM-DD HH:MM:SS 形式で入力してください。"
+            ValidateCorrectionInput = False
+            Exit Function
+        End If
+        If Len(Trim$(reqClockOut)) < 16 Or Not IsDate(reqClockOut) Then
+            errMessage = "修正後退勤時刻は YYYY-MM-DD HH:MM:SS 形式で入力してください。"
+            ValidateCorrectionInput = False
+            Exit Function
+        End If
+        If CDate(reqClockOut) <= CDate(reqClockIn) Then
+            errMessage = "修正後退勤時刻は出勤時刻より後に設定してください。"
+            ValidateCorrectionInput = False
+            Exit Function
+        End If
+    End If
+
+    If Len(Trim$(reqBreakMin)) > 0 Then
+        If Not IsNumeric(reqBreakMin) Or CLng(reqBreakMin) < 0 Then
+            errMessage = "休憩分数は0以上の数値で入力してください。"
+            ValidateCorrectionInput = False
+            Exit Function
+        End If
+    End If
+
+    errMessage = ""
+    ValidateCorrectionInput = True
+End Function
+
+' Verify whether targetYM ("YYYY-MM") can be closed without blocking anomalies.
+Public Function ValidateMonthCloseReady(ByVal targetYM As String, ByRef errMessage As String) As Boolean
+    Dim openCount As Long
+    Dim pendingReqCount As Long
+    Dim safeYM As String
+
+    If Not ValidateYMFilter(targetYM, errMessage) Then
+        ValidateMonthCloseReady = False
+        Exit Function
+    End If
+
+    safeYM = SqlEscape(Trim$(targetYM))
+
+    openCount = DCount("AttendanceID", "AttendanceRecords", _
+        "Left(WorkDate, 7) = '" & safeYM & "' AND Status IN ('" & ATT_STATUS_WORKING & "', '" & ATT_STATUS_ONBREAK & "')")
+    If openCount > 0 Then
+        errMessage = targetYM & " に未退勤・休憩中のレコードが " & openCount & " 件残っているため締め処理できません。"
+        ValidateMonthCloseReady = False
+        Exit Function
+    End If
+
+    pendingReqCount = DCount("RequestID", "CorrectionRequests", _
+        "Left(TargetDate, 7) = '" & safeYM & "' AND ApprovalStatus = '" & APPR_PENDING & "'")
+    If pendingReqCount > 0 Then
+        errMessage = targetYM & " に未承認の修正申請が " & pendingReqCount & " 件残っているため締め処理できません。"
+        ValidateMonthCloseReady = False
+        Exit Function
+    End If
+
+    errMessage = ""
+    ValidateMonthCloseReady = True
+End Function
+
+' Validate optional WorkDate input ("YYYY-MM-DD").
 Public Function ValidateDateFilter(ByVal dateText As String, ByRef errMessage As String) As Boolean
     Dim trimmed As String
     Dim parsedDate As Date
@@ -139,13 +344,13 @@ Public Function ValidateDateFilter(ByVal dateText As String, ByRef errMessage As
     End If
 
     If Len(trimmed) <> 10 Or Mid$(trimmed, 5, 1) <> "-" Or Mid$(trimmed, 8, 1) <> "-" Then
-        errMessage = "勤務日は YYYY-MM-DD 形式で入力してください（例: 2026-11-18）。"
+        errMessage = "日付は YYYY-MM-DD 形式で入力してください（例: 2026-11-18）。"
         ValidateDateFilter = False
         Exit Function
     End If
 
     If Not IsNumeric(Left$(trimmed, 4)) Or Not IsNumeric(Mid$(trimmed, 6, 2)) Or Not IsNumeric(Right$(trimmed, 2)) Then
-        errMessage = "勤務日は YYYY-MM-DD 形式で入力してください（例: 2026-11-18）。"
+        errMessage = "日付は YYYY-MM-DD 形式で入力してください（例: 2026-11-18）。"
         ValidateDateFilter = False
         Exit Function
     End If
@@ -165,4 +370,31 @@ Public Function ValidateDateFilter(ByVal dateText As String, ByRef errMessage As
 
     errMessage = ""
     ValidateDateFilter = True
+End Function
+
+' Validate TargetYM ("YYYY-MM").
+Public Function ValidateYMFilter(ByVal ymText As String, ByRef errMessage As String) As Boolean
+    Dim trimmed As String
+
+    trimmed = Trim$(ymText)
+    If Len(trimmed) <> 7 Or Mid$(trimmed, 5, 1) <> "-" Then
+        errMessage = "対象年月は YYYY-MM 形式で入力してください（例: 2026-11）。"
+        ValidateYMFilter = False
+        Exit Function
+    End If
+
+    If Not IsNumeric(Left$(trimmed, 4)) Or Not IsNumeric(Right$(trimmed, 2)) Then
+        errMessage = "対象年月は YYYY-MM 形式で入力してください（例: 2026-11）。"
+        ValidateYMFilter = False
+        Exit Function
+    End If
+
+    If CLng(Right$(trimmed, 2)) < 1 Or CLng(Right$(trimmed, 2)) > 12 Then
+        errMessage = "対象年月の月部分が不正です (" & trimmed & ")。"
+        ValidateYMFilter = False
+        Exit Function
+    End If
+
+    errMessage = ""
+    ValidateYMFilter = True
 End Function

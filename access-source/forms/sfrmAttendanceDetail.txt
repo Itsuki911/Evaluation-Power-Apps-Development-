@@ -1,0 +1,340 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =1
+    ViewsAllowed =1
+    ScrollBars =2
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =15700
+    DatasheetFontHeight =10
+    ItemSuffix =26
+    Caption ="月次出勤簿明細サブフォーム"
+    RecordSource ="qryAttendanceCalc"
+    BeforeUpdate ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =480
+            BackColor =15132390
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =120
+                    Top =100
+                    Width =1200
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHDate"
+                    Caption ="勤務日"
+                End
+                Begin Label
+                    Left =1380
+                    Top =100
+                    Width =1500
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHEmp"
+                    Caption ="氏名"
+                End
+                Begin Label
+                    Left =2940
+                    Top =100
+                    Width =720
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHType"
+                    Caption ="区分"
+                End
+                Begin Label
+                    Left =3720
+                    Top =100
+                    Width =2040
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHIn"
+                    Caption ="出勤時刻"
+                End
+                Begin Label
+                    Left =5820
+                    Top =100
+                    Width =2040
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHOut"
+                    Caption ="退勤時刻"
+                End
+                Begin Label
+                    Left =7920
+                    Top =100
+                    Width =900
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHWork"
+                    Caption ="実働"
+                End
+                Begin Label
+                    Left =8880
+                    Top =100
+                    Width =900
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHOT"
+                    Caption ="残業(分)"
+                End
+                Begin Label
+                    Left =9840
+                    Top =100
+                    Width =900
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHLN"
+                    Caption ="深夜(分)"
+                End
+                Begin Label
+                    Left =10800
+                    Top =100
+                    Width =1080
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHStatus"
+                    Caption ="状態"
+                End
+                Begin Label
+                    Left =11940
+                    Top =100
+                    Width =960
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHLock"
+                    Caption ="締状態"
+                End
+                Begin Label
+                    Left =12960
+                    Top =100
+                    Width =1400
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHRem"
+                    Caption ="備考"
+                End
+            End
+        End
+        Begin Section
+            Height =480
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =0
+                    Top =0
+                    Width =400
+                    Height =240
+                    Name ="txtAttendanceID"
+                    ControlSource ="AttendanceID"
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =0
+                    Top =240
+                    Width =400
+                    Height =240
+                    Name ="txtEmployeeID"
+                    ControlSource ="EmployeeID"
+                End
+                Begin TextBox
+                    Visible = NotDefault
+                    Left =420
+                    Top =0
+                    Width =400
+                    Height =240
+                    Name ="txtCloseFlag"
+                    ControlSource ="CloseFlag"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =120
+                    Top =80
+                    Width =1200
+                    Height =320
+                    Name ="txtWorkDate"
+                    ControlSource ="WorkDate"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1380
+                    Top =80
+                    Width =1500
+                    Height =320
+                    Name ="txtEmployeeName"
+                    ControlSource ="EmployeeName"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =2940
+                    Top =80
+                    Width =720
+                    Height =320
+                    Name ="txtWorkTypeLabel"
+                    ControlSource ="WorkTypeLabel"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =3720
+                    Top =80
+                    Width =2040
+                    Height =320
+                    Name ="txtClockIn"
+                    ControlSource ="ClockIn"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =5820
+                    Top =80
+                    Width =2040
+                    Height =320
+                    Name ="txtClockOut"
+                    ControlSource ="ClockOut"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =7920
+                    Top =80
+                    Width =900
+                    Height =320
+                    Name ="txtNetWorkHHMM"
+                    ControlSource ="NetWorkHHMM"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =8880
+                    Top =80
+                    Width =900
+                    Height =320
+                    Name ="txtOvertimeMin"
+                    ControlSource ="OvertimeMin"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =9840
+                    Top =80
+                    Width =900
+                    Height =320
+                    Name ="txtLateNightMin"
+                    ControlSource ="LateNightMin"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =10800
+                    Top =80
+                    Width =1080
+                    Height =320
+                    Name ="txtStatus"
+                    ControlSource ="Status"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =11940
+                    Top =80
+                    Width =960
+                    Height =320
+                    Name ="txtLockLabel"
+                    ControlSource ="=IIf([CloseFlag]=\"1\",\"締済\",\"未締\")"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =12960
+                    Top =80
+                    Width =1400
+                    Height =320
+                    Name ="txtRemarks"
+                    ControlSource ="Remarks"
+                End
+                Begin CommandButton
+                    Left =14440
+                    Top =70
+                    Width =1140
+                    Height =340
+                    Name ="btnRequestFix"
+                    Caption ="修正申請"
+                    OnClick ="[Event Procedure]"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =520
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =120
+                    Top =120
+                    Width =1200
+                    Height =280
+                    Name ="lblRowCnt"
+                    Caption ="表示行数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1380
+                    Top =100
+                    Width =1000
+                    Height =320
+                    Name ="txtRowCnt"
+                    ControlSource ="=Count([AttendanceID])"
+                End
+                Begin Label
+                    Left =2760
+                    Top =120
+                    Width =1440
+                    Height =280
+                    Name ="lblWorkingCnt"
+                    Caption ="未退勤・休憩中:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =4260
+                    Top =100
+                    Width =1000
+                    Height =320
+                    Name ="txtWorkingCnt"
+                    ControlSource ="=Sum(IIf([Status]='Working' Or [Status]='OnBreak',1,0))"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+' Legacy lock guard: prevent direct edits on closed months even if AllowEdits is toggled.
+Private Sub Form_BeforeUpdate(Cancel As Integer)
+    If Trim$(Nz(Me.txtCloseFlag.Value, CLOSE_OPEN)) = CLOSE_LOCKED Then
+        MsgBox "この月の勤怠は既に月次締済のため直接変更できません。修正申請画面から申請してください。", vbExclamation, "締済ロック"
+        Cancel = True
+        Me.Undo
+    End If
+End Sub
+
+' Launch frmCorrectionRequest passing pipe-delimited OpenArgs: "AttendanceID|EmployeeID|WorkDate"
+Private Sub btnRequestFix_Click()
+    Dim argStr As String
+    argStr = Trim$(Nz(Me.txtAttendanceID.Value, "")) & "|" & _
+             Trim$(Nz(Me.txtEmployeeID.Value, "")) & "|" & _
+             Trim$(Nz(Me.txtWorkDate.Value, ""))
+    DoCmd.OpenForm "frmCorrectionRequest", acNormal, , , , acWindowNormal, argStr
+End Sub

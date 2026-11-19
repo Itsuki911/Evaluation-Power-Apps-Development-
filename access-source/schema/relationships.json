@@ -2,9 +2,29 @@
   "metadata": {
     "fileCategory": "custom_auxiliary",
     "isSimulatedAccessExport": false,
-    "description": "Logical table relationships for the AttendanceManagement Access database."
+    "description": "Logical relationships across the five linked Excel tables in the legacy Access attendance application."
   },
   "relationships": [
+    {
+      "name": "WorkPatterns_Employees_PatternCode",
+      "parentTable": "WorkPatterns",
+      "parentColumn": "PatternCode",
+      "childTable": "Employees",
+      "childColumn": "PatternCode",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "LEFT JOIN",
+      "enforcedByEngine": false
+    },
+    {
+      "name": "Employees_Employees_ManagerID",
+      "parentTable": "Employees",
+      "parentColumn": "EmployeeID",
+      "childTable": "Employees",
+      "childColumn": "ManagerID",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "LEFT JOIN",
+      "enforcedByEngine": false
+    },
     {
       "name": "Employees_AttendanceRecords_EmployeeID",
       "parentTable": "Employees",
@@ -14,7 +34,39 @@
       "cardinality": "one-to-many",
       "joinTypeDefault": "INNER JOIN",
       "enforcedByEngine": false,
-      "enforcementNotes": "Microsoft Access cannot enforce physical referential integrity on linked Excel tables. Referential existence and Active status are validated in VBA via modValidation.ValidateEmployeeActive."
+      "enforcementNotes": "Validated in VBA via modValidation.ValidateEmployeeActive."
+    },
+    {
+      "name": "Employees_CorrectionRequests_EmployeeID",
+      "parentTable": "Employees",
+      "parentColumn": "EmployeeID",
+      "childTable": "CorrectionRequests",
+      "childColumn": "EmployeeID",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "INNER JOIN",
+      "enforcedByEngine": false
+    },
+    {
+      "name": "AttendanceRecords_CorrectionRequests_AttendanceID",
+      "parentTable": "AttendanceRecords",
+      "parentColumn": "AttendanceID",
+      "childTable": "CorrectionRequests",
+      "childColumn": "AttendanceID",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "LEFT JOIN",
+      "enforcedByEngine": false,
+      "enforcementNotes": "AttendanceID on CorrectionRequests is nullable when requesting insertion of a missing work day."
+    },
+    {
+      "name": "MonthlyClosings_AttendanceRecords_WorkYM",
+      "parentTable": "MonthlyClosings",
+      "parentColumn": "TargetYM",
+      "childTable": "AttendanceRecords",
+      "childColumn": "WorkDate",
+      "joinExpression": "Left(AttendanceRecords.WorkDate, 7) = MonthlyClosings.TargetYM",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "LEFT JOIN",
+      "enforcedByEngine": false
     }
   ]
 }

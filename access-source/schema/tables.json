@@ -2,7 +2,7 @@
   "metadata": {
     "fileCategory": "custom_auxiliary",
     "isSimulatedAccessExport": false,
-    "description": "Logical Access table schema definitions aligned with the Excel data sources."
+    "description": "Logical Access table schema definitions aligned with all five Excel data workbooks."
   },
   "tables": [
     {
@@ -15,43 +15,33 @@
       },
       "primaryKey": ["EmployeeID"],
       "columns": [
-        {
-          "name": "EmployeeID",
-          "accessType": "Short Text",
-          "maxLength": 10,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": true,
-          "description": "Unique employee identifier (e.g., EMP001)."
-        },
-        {
-          "name": "EmployeeName",
-          "accessType": "Short Text",
-          "maxLength": 100,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "description": "Full name of the employee."
-        },
-        {
-          "name": "Department",
-          "accessType": "Short Text",
-          "maxLength": 50,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "description": "Department to which the employee belongs."
-        },
-        {
-          "name": "Status",
-          "accessType": "Short Text",
-          "maxLength": 20,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "allowedValues": ["Active", "Inactive"],
-          "description": "Employment status. Only Active employees can clock in or out."
-        }
+        { "name": "EmployeeID", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": true },
+        { "name": "EmployeeName", "accessType": "Short Text", "maxLength": 100, "excelFormat": "@", "nullable": false, "unique": false },
+        { "name": "Department", "accessType": "Short Text", "maxLength": 50, "excelFormat": "@", "nullable": false, "unique": false },
+        { "name": "Status", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["Active", "Inactive"] },
+        { "name": "Role", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["Staff", "Manager", "Admin"] },
+        { "name": "PatternCode", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": false, "foreignKey": "WorkPatterns.PatternCode" },
+        { "name": "ManagerID", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": true, "unique": false, "foreignKey": "Employees.EmployeeID" },
+        { "name": "HireDate", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      ]
+    },
+    {
+      "name": "WorkPatterns",
+      "isLinkedTable": true,
+      "linkedSource": {
+        "workbook": "data/WorkPatterns.xlsx",
+        "worksheet": "WorkPatterns",
+        "excelTableName": "WorkPatternsTable"
+      },
+      "primaryKey": ["PatternCode"],
+      "columns": [
+        { "name": "PatternCode", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": true },
+        { "name": "PatternName", "accessType": "Short Text", "maxLength": 100, "excelFormat": "@", "nullable": false, "unique": false },
+        { "name": "StartTime", "accessType": "Short Text", "maxLength": 5, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]{2}:[0-9]{2}$" },
+        { "name": "EndTime", "accessType": "Short Text", "maxLength": 5, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]{2}:[0-9]{2}$" },
+        { "name": "StdBreakMin", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]+$" },
+        { "name": "StdWorkMin", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]+$" },
+        { "name": "RoundUnitMin", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]+$" }
       ]
     },
     {
@@ -64,66 +54,59 @@
       },
       "primaryKey": ["AttendanceID"],
       "columns": [
-        {
-          "name": "AttendanceID",
-          "accessType": "Short Text",
-          "maxLength": 20,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": true,
-          "pattern": "^ATT-[0-9]{8}-[0-9]{3}$",
-          "description": "Unique attendance record identifier generated as ATT-YYYYMMDD-NNN."
-        },
-        {
-          "name": "EmployeeID",
-          "accessType": "Short Text",
-          "maxLength": 10,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "foreignKey": "Employees.EmployeeID",
-          "description": "Identifier of the employee who clocked in."
-        },
-        {
-          "name": "WorkDate",
-          "accessType": "Short Text",
-          "maxLength": 10,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-          "description": "Work date formatted as ISO-8601 text (YYYY-MM-DD) for Excel Online compatibility."
-        },
-        {
-          "name": "ClockIn",
-          "accessType": "Short Text",
-          "maxLength": 19,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$",
-          "description": "Clock-in timestamp formatted as ISO-8601 text (YYYY-MM-DD HH:MM:SS)."
-        },
-        {
-          "name": "ClockOut",
-          "accessType": "Short Text",
-          "maxLength": 19,
-          "excelFormat": "@",
-          "nullable": true,
-          "unique": false,
-          "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$",
-          "description": "Clock-out timestamp formatted as ISO-8601 text (YYYY-MM-DD HH:MM:SS), or empty while Status is Working."
-        },
-        {
-          "name": "Status",
-          "accessType": "Short Text",
-          "maxLength": 20,
-          "excelFormat": "@",
-          "nullable": false,
-          "unique": false,
-          "allowedValues": ["Working", "Completed"],
-          "description": "Attendance state: Working (clocked in, not yet clocked out) or Completed (clocked out)."
-        }
+        { "name": "AttendanceID", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": true, "pattern": "^ATT-[0-9]{8}-[0-9]{3}$" },
+        { "name": "EmployeeID", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "foreignKey": "Employees.EmployeeID" },
+        { "name": "WorkDate", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        { "name": "ClockIn", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "ClockOut", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "BreakStart", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "BreakEnd", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "BreakMinutes", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]+)?$" },
+        { "name": "WorkType", "accessType": "Short Text", "maxLength": 4, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["01", "02", "03", "04", "05", "09"] },
+        { "name": "Status", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["Working", "OnBreak", "Completed", "Leave"] },
+        { "name": "Remarks", "accessType": "Short Text", "maxLength": 255, "excelFormat": "@", "nullable": true, "unique": false },
+        { "name": "UpdatedBy", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "foreignKey": "Employees.EmployeeID" }
+      ]
+    },
+    {
+      "name": "CorrectionRequests",
+      "isLinkedTable": true,
+      "linkedSource": {
+        "workbook": "data/CorrectionRequests.xlsx",
+        "worksheet": "CorrectionRequests",
+        "excelTableName": "CorrectionRequestsTable"
+      },
+      "primaryKey": ["RequestID"],
+      "columns": [
+        { "name": "RequestID", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": false, "unique": true, "pattern": "^REQ-[0-9]{8}-[0-9]{3}$" },
+        { "name": "AttendanceID", "accessType": "Short Text", "maxLength": 20, "excelFormat": "@", "nullable": true, "unique": false },
+        { "name": "EmployeeID", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "foreignKey": "Employees.EmployeeID" },
+        { "name": "TargetDate", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": false, "unique": false, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        { "name": "ReqClockIn", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "ReqClockOut", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "ReqBreakMin", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]+)?$" },
+        { "name": "ReqWorkType", "accessType": "Short Text", "maxLength": 4, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["01", "02", "03", "04", "05", "09"] },
+        { "name": "Reason", "accessType": "Short Text", "maxLength": 255, "excelFormat": "@", "nullable": false, "unique": false },
+        { "name": "ApprovalStatus", "accessType": "Short Text", "maxLength": 4, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["0", "1", "2"] },
+        { "name": "ApproverID", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": true, "unique": false, "foreignKey": "Employees.EmployeeID" },
+        { "name": "ApprovedAt", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" }
+      ]
+    },
+    {
+      "name": "MonthlyClosings",
+      "isLinkedTable": true,
+      "linkedSource": {
+        "workbook": "data/MonthlyClosings.xlsx",
+        "worksheet": "MonthlyClosings",
+        "excelTableName": "MonthlyClosingsTable"
+      },
+      "primaryKey": ["TargetYM"],
+      "columns": [
+        { "name": "TargetYM", "accessType": "Short Text", "maxLength": 7, "excelFormat": "@", "nullable": false, "unique": true, "pattern": "^[0-9]{4}-[0-9]{2}$" },
+        { "name": "CloseFlag", "accessType": "Short Text", "maxLength": 4, "excelFormat": "@", "nullable": false, "unique": false, "allowedValues": ["0", "1"] },
+        { "name": "ClosedBy", "accessType": "Short Text", "maxLength": 10, "excelFormat": "@", "nullable": true, "unique": false, "foreignKey": "Employees.EmployeeID" },
+        { "name": "ClosedAt", "accessType": "Short Text", "maxLength": 19, "excelFormat": "@", "nullable": true, "unique": false, "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})?$" },
+        { "name": "Note", "accessType": "Short Text", "maxLength": 255, "excelFormat": "@", "nullable": true, "unique": false }
       ]
     }
   ]

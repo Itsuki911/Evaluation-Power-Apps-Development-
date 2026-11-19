@@ -10,11 +10,11 @@ Begin Report
     PictureAlignment =2
     DatasheetGridlinesBehavior =3
     GridY =10
-    Width =11520
+    Width =13200
     DatasheetFontHeight =11
-    ItemSuffix =18
-    Caption ="従業員別 勤怠履歴レポート"
-    RecordSource ="qryAttendanceHistory"
+    ItemSuffix =22
+    Caption ="従業員別 月次出勤簿レポート"
+    RecordSource ="qryAttendanceCalc"
     OnNoData ="[Event Procedure]"
     Begin
         Begin GroupLevel
@@ -23,12 +23,7 @@ Begin Report
             ControlSource ="EmployeeID"
         End
         Begin GroupLevel
-            SortOrder = NotDefault
             ControlSource ="WorkDate"
-        End
-        Begin GroupLevel
-            SortOrder = NotDefault
-            ControlSource ="ClockIn"
         End
         Begin ReportHeader
             Height =960
@@ -38,17 +33,17 @@ Begin Report
                 Begin Label
                     Left =240
                     Top =200
-                    Width =6000
+                    Width =6600
                     Height =480
                     FontSize =16
                     FontWeight =700
                     Name ="lblReportTitle"
-                    Caption ="従業員別 勤怠履歴レポート"
+                    Caption ="従業員別 月次出勤簿レポート"
                 End
                 Begin TextBox
-                    Left =8400
+                    Left =9600
                     Top =280
-                    Width =2880
+                    Width =3360
                     Height =320
                     Name ="txtPrintDate"
                     ControlSource ="=Format(Now(),\"yyyy-mm-dd hh:nn\")"
@@ -63,47 +58,74 @@ Begin Report
                 Begin Label
                     Left =240
                     Top =100
-                    Width =2160
-                    Height =280
-                    FontWeight =700
-                    Name ="lblHdrAttendanceID"
-                    Caption ="勤怠ID"
-                End
-                Begin Label
-                    Left =2520
-                    Top =100
-                    Width =1560
+                    Width =1320
                     Height =280
                     FontWeight =700
                     Name ="lblHdrWorkDate"
                     Caption ="勤務日"
                 End
                 Begin Label
-                    Left =4200
+                    Left =1680
                     Top =100
-                    Width =2640
+                    Width =840
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrType"
+                    Caption ="区分"
+                End
+                Begin Label
+                    Left =2640
+                    Top =100
+                    Width =2280
                     Height =280
                     FontWeight =700
                     Name ="lblHdrClockIn"
                     Caption ="出勤時刻"
                 End
                 Begin Label
-                    Left =6960
+                    Left =5040
                     Top =100
-                    Width =2640
+                    Width =2280
                     Height =280
                     FontWeight =700
                     Name ="lblHdrClockOut"
                     Caption ="退勤時刻"
                 End
                 Begin Label
-                    Left =9720
+                    Left =7440
                     Top =100
-                    Width =1560
+                    Width =1080
                     Height =280
                     FontWeight =700
-                    Name ="lblHdrStatus"
-                    Caption ="状態"
+                    Name ="lblHdrNetWork"
+                    Caption ="実働"
+                End
+                Begin Label
+                    Left =8640
+                    Top =100
+                    Width =1080
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrOvertime"
+                    Caption ="残業(分)"
+                End
+                Begin Label
+                    Left =9840
+                    Top =100
+                    Width =1080
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrLateNight"
+                    Caption ="深夜(分)"
+                End
+                Begin Label
+                    Left =11040
+                    Top =100
+                    Width =1920
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrRemarks"
+                    Caption ="備考"
                 End
             End
         End
@@ -116,14 +138,14 @@ Begin Report
                 Begin TextBox
                     Left =240
                     Top =100
-                    Width =1440
+                    Width =1320
                     Height =320
                     FontWeight =700
                     Name ="txtGroupEmployeeID"
                     ControlSource ="EmployeeID"
                 End
                 Begin TextBox
-                    Left =1800
+                    Left =1680
                     Top =100
                     Width =2640
                     Height =320
@@ -132,12 +154,20 @@ Begin Report
                     ControlSource ="EmployeeName"
                 End
                 Begin TextBox
-                    Left =4560
+                    Left =4440
                     Top =100
-                    Width =2400
+                    Width =2200
                     Height =320
                     Name ="txtGroupDepartment"
                     ControlSource ="Department"
+                End
+                Begin TextBox
+                    Left =6840
+                    Top =100
+                    Width =2400
+                    Height =320
+                    Name ="txtGroupPattern"
+                    ControlSource ="PatternCode"
                 End
             End
         End
@@ -150,68 +180,110 @@ Begin Report
                 Begin TextBox
                     Left =240
                     Top =60
-                    Width =2160
-                    Height =320
-                    Name ="txtAttendanceID"
-                    ControlSource ="AttendanceID"
-                End
-                Begin TextBox
-                    Left =2520
-                    Top =60
-                    Width =1560
+                    Width =1320
                     Height =320
                     Name ="txtWorkDate"
                     ControlSource ="WorkDate"
                 End
                 Begin TextBox
-                    Left =4200
+                    Left =1680
                     Top =60
-                    Width =2640
+                    Width =840
+                    Height =320
+                    Name ="txtWorkTypeLabel"
+                    ControlSource ="WorkTypeLabel"
+                End
+                Begin TextBox
+                    Left =2640
+                    Top =60
+                    Width =2280
                     Height =320
                     Name ="txtClockIn"
                     ControlSource ="ClockIn"
                 End
                 Begin TextBox
-                    Left =6960
+                    Left =5040
                     Top =60
-                    Width =2640
+                    Width =2280
                     Height =320
                     Name ="txtClockOut"
                     ControlSource ="ClockOut"
                 End
                 Begin TextBox
-                    Left =9720
+                    Left =7440
                     Top =60
-                    Width =1560
+                    Width =1080
                     Height =320
-                    Name ="txtStatus"
-                    ControlSource ="Status"
+                    Name ="txtNetWorkHHMM"
+                    ControlSource ="NetWorkHHMM"
+                End
+                Begin TextBox
+                    Left =8640
+                    Top =60
+                    Width =1080
+                    Height =320
+                    Name ="txtOvertimeMin"
+                    ControlSource ="OvertimeMin"
+                End
+                Begin TextBox
+                    Left =9840
+                    Top =60
+                    Width =1080
+                    Height =320
+                    Name ="txtLateNightMin"
+                    ControlSource ="LateNightMin"
+                End
+                Begin TextBox
+                    Left =11040
+                    Top =60
+                    Width =1920
+                    Height =320
+                    Name ="txtRemarks"
+                    ControlSource ="Remarks"
                 End
             End
         End
         Begin BreakFooter
             KeepTogether = NotDefault
-            Height =480
+            Height =560
             BackColor =16777215
             Name ="GroupFooter0"
             Begin
                 Begin Label
-                    Left =7800
-                    Top =80
-                    Width =1800
+                    Left =4800
+                    Top =100
+                    Width =2520
                     Height =300
                     FontWeight =700
-                    Name ="lblEmployeeSubtotal"
-                    Caption ="従業員別件数:"
+                    Name ="lblEmpSummary"
+                    Caption ="従業員計 (実働 / 残業 / 深夜):"
                 End
                 Begin TextBox
-                    Left =9720
-                    Top =80
-                    Width =1560
+                    Left =7440
+                    Top =100
+                    Width =1080
                     Height =300
                     FontWeight =700
-                    Name ="txtEmployeeSubtotal"
-                    ControlSource ="=Count([AttendanceID])"
+                    Name ="txtEmpWorkTotal"
+                    ControlSource ="=FormatMinutesHHMM(Sum([NetWorkMin]))"
+                End
+                Begin TextBox
+                    Left =8640
+                    Top =100
+                    Width =1080
+                    Height =300
+                    FontWeight =700
+                    Name ="txtEmpOvertimeTotal"
+                    ControlSource ="=FormatMinutesHHMM(Sum([OvertimeMin]))"
+                End
+                Begin TextBox
+                    Left =9840
+                    Top =100
+                    Width =1080
+                    Height =300
+                    FontWeight =700
+                    Name ="txtEmpLateNightTotal"
+                    ControlSource ="=FormatMinutesHHMM(Sum([LateNightMin]))"
                 End
             End
         End
@@ -221,9 +293,9 @@ Begin Report
             Name ="PageFooterSection"
             Begin
                 Begin TextBox
-                    Left =9240
+                    Left =10800
                     Top =60
-                    Width =2040
+                    Width =2160
                     Height =300
                     Name ="txtPageNumber"
                     ControlSource ="=\"Page \" & [Page] & \" / \" & [Pages]"
@@ -236,22 +308,31 @@ Begin Report
             Name ="ReportFooter"
             Begin
                 Begin Label
-                    Left =7800
+                    Left =5280
                     Top =140
-                    Width =1800
+                    Width =2040
                     Height =320
                     FontWeight =700
                     Name ="lblGrandTotal"
-                    Caption ="総合計件数:"
+                    Caption ="総合計 (件数 / 残業):"
                 End
                 Begin TextBox
-                    Left =9720
+                    Left =7440
                     Top =140
-                    Width =1560
+                    Width =1080
                     Height =320
                     FontWeight =700
-                    Name ="txtGrandTotal"
+                    Name ="txtGrandCount"
                     ControlSource ="=Count([AttendanceID])"
+                End
+                Begin TextBox
+                    Left =8640
+                    Top =140
+                    Width =1080
+                    Height =320
+                    FontWeight =700
+                    Name ="txtGrandOvertime"
+                    ControlSource ="=FormatMinutesHHMM(Sum([OvertimeMin]))"
                 End
             End
         End
@@ -266,6 +347,6 @@ Option Compare Database
 Option Explicit
 
 Private Sub Report_NoData(Cancel As Integer)
-    MsgBox "出力対象の勤怠履歴データがありません。", vbInformation, "勤怠履歴レポート"
+    MsgBox "出力対象の出勤簿データがありません。", vbInformation, "月次出勤簿レポート"
     Cancel = True
 End Sub
