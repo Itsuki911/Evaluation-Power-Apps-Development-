@@ -1,0 +1,198 @@
+{
+  "applicationName": "AttendanceManagement",
+  "displayName": "勤怠管理システム (Attendance Management)",
+  "version": "1.0.0",
+  "description": "従業員の出勤打刻・退勤打刻・未退勤状況の確認・従業員別勤怠履歴の閲覧およびレポート出力を行うシンプルなMicrosoft Access業務管理アプリの疑似エクスポート構成。",
+  "isSimulatedExport": true,
+  "simulatedAccessEnvironment": {
+    "targetVersion": "Microsoft Access for Microsoft 365 / Access 2019+ (SaveAsText Version 21)",
+    "generatedWithoutAccessRuntime": true,
+    "notes": "Access実行環境なしでApplication.SaveAsText / VBEエクスポート形式を模擬して生成されたファイル群です。実機のSaveAsText出力と完全にバイト一致するものではありません。"
+  },
+  "startupObject": {
+    "type": "Macro",
+    "name": "AutoExec",
+    "opensForm": "frmMain"
+  },
+  "fileCategories": {
+    "simulated_access_export": "Microsoft AccessのApplication.SaveAsText / VBEエクスポート / Access SQL形式を模擬した実体ファイル",
+    "data_source": "実データと正式なExcelテーブルを保持するExcelブック（.xlsx）",
+    "custom_auxiliary": "Access実行環境なしでスキーマやリンク設定・全体構造を補完するために独自設計した補助ファイル",
+    "evaluation_ground_truth": "移行後の動作検証用テストケース定義（実装ヒントではなく評価基準）"
+  },
+  "forms": [
+    {
+      "name": "frmMain",
+      "caption": "勤怠管理 - メイン画面",
+      "path": "forms/frmMain.txt",
+      "format": "Access SaveAsText (acForm)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "recordSource": "",
+      "role": "スタートアップ画面。従業員選択、出勤打刻、退勤打刻、未退勤一覧表示、選択従業員の勤怠履歴表示、他画面・レポートへの遷移を担当。"
+    },
+    {
+      "name": "frmEmployees",
+      "caption": "従業員一覧",
+      "path": "forms/frmEmployees.txt",
+      "format": "Access SaveAsText (acForm)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "recordSource": "qryEmployees",
+      "role": "従業員マスタ一覧表示、部署による絞り込み、メイン画面への従業員受け渡し、従業員別勤怠履歴画面への遷移を担当。"
+    },
+    {
+      "name": "frmAttendance",
+      "caption": "勤怠記録一覧",
+      "path": "forms/frmAttendance.txt",
+      "format": "Access SaveAsText (acForm)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "recordSource": "qryAttendanceHistory",
+      "role": "全勤怠記録の一覧表示、従業員・勤務日・状態による絞り込み、件数集計表示、レポート出力を担当。"
+    }
+  ],
+  "reports": [
+    {
+      "name": "rptAttendanceHistory",
+      "caption": "従業員別 勤怠履歴レポート",
+      "path": "reports/rptAttendanceHistory.txt",
+      "format": "Access SaveAsText (acReport)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "recordSource": "qryAttendanceHistory",
+      "role": "従業員IDごとにグループ化した勤怠履歴と小計・総合計を出力する印刷用レポート。"
+    }
+  ],
+  "queries": [
+    {
+      "name": "qryEmployees",
+      "path": "queries/qryEmployees.sql",
+      "format": "Access SQL (.sql)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "sourceTables": ["Employees"],
+      "role": "従業員一覧をEmployeeID昇順で取得する基本クエリ。"
+    },
+    {
+      "name": "qryAttendanceHistory",
+      "path": "queries/qryAttendanceHistory.sql",
+      "format": "Access SQL (.sql)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "sourceTables": ["AttendanceRecords", "Employees"],
+      "role": "勤怠記録と従業員情報を結合し、勤務日・出勤時刻の降順で取得するクエリ。"
+    },
+    {
+      "name": "qryOpenAttendance",
+      "path": "queries/qryOpenAttendance.sql",
+      "format": "Access SQL (.sql)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "sourceTables": ["AttendanceRecords", "Employees"],
+      "role": "Status='Working'かつClockOut未設定の未退勤レコードを抽出するクエリ。"
+    }
+  ],
+  "modules": [
+    {
+      "name": "modAttendance",
+      "path": "modules/modAttendance.bas",
+      "format": "VBA Standard Module (.bas)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "role": "出勤打刻（ClockInEmployee）、退勤打刻（ClockOutEmployee）、勤怠ID採番、未退勤検索、状態取得、Excel ADODB書き込み処理を提供。"
+    },
+    {
+      "name": "modValidation",
+      "path": "modules/modValidation.bas",
+      "format": "VBA Standard Module (.bas)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "role": "従業員選択確認、在籍確認、重複打刻防止、未退勤有無チェック、日付形式チェック、SQLエスケープを提供。"
+    }
+  ],
+  "macros": [
+    {
+      "name": "AutoExec",
+      "path": "macros/AutoExec.txt",
+      "format": "Access SaveAsText (acMacro)",
+      "category": "simulated_access_export",
+      "isSimulatedAccessExport": true,
+      "role": "データベース起動時にfrmMainを自動起動するスタートアップマクロ。"
+    }
+  ],
+  "dataSources": [
+    {
+      "name": "Employees",
+      "path": "data/Employees.xlsx",
+      "format": "Excel Workbook (.xlsx)",
+      "category": "data_source",
+      "isSimulatedAccessExport": false,
+      "worksheetName": "Employees",
+      "excelTableName": "EmployeesTable",
+      "columns": ["EmployeeID", "EmployeeName", "Department", "Status"]
+    },
+    {
+      "name": "AttendanceRecords",
+      "path": "data/AttendanceRecords.xlsx",
+      "format": "Excel Workbook (.xlsx)",
+      "category": "data_source",
+      "isSimulatedAccessExport": false,
+      "worksheetName": "AttendanceRecords",
+      "excelTableName": "AttendanceRecordsTable",
+      "columns": ["AttendanceID", "EmployeeID", "WorkDate", "ClockIn", "ClockOut", "Status"]
+    }
+  ],
+  "auxiliaryFiles": [
+    {
+      "name": "tables",
+      "path": "schema/tables.json",
+      "format": "JSON",
+      "category": "custom_auxiliary",
+      "isSimulatedAccessExport": false,
+      "role": "テーブル・カラム・型・制約の機械可読スキーマ定義。"
+    },
+    {
+      "name": "relationships",
+      "path": "schema/relationships.json",
+      "format": "JSON",
+      "category": "custom_auxiliary",
+      "isSimulatedAccessExport": false,
+      "role": "テーブル間の論理リレーションシップ定義。"
+    },
+    {
+      "name": "excel-links",
+      "path": "schema/excel-links.json",
+      "format": "JSON",
+      "category": "custom_auxiliary",
+      "isSimulatedAccessExport": false,
+      "role": "AccessからExcelへのリンク接続設定およびACE書き込み制約の定義。"
+    },
+    {
+      "name": "manifest",
+      "path": "manifest.json",
+      "format": "JSON",
+      "category": "custom_auxiliary",
+      "isSimulatedAccessExport": false,
+      "role": "アプリ全体の構成ファイル一覧と分類定義。"
+    },
+    {
+      "name": "README",
+      "path": "README.md",
+      "format": "Markdown",
+      "category": "custom_auxiliary",
+      "isSimulatedAccessExport": false,
+      "role": "Access側の構成・データ構造・ファイル形式・制約の説明ドキュメント。"
+    }
+  ],
+  "evaluationFiles": [
+    {
+      "name": "expected-behavior",
+      "path": "tests/expected-behavior.json",
+      "format": "JSON",
+      "category": "evaluation_ground_truth",
+      "isSimulatedAccessExport": false,
+      "role": "移行結果の受け入れ評価用期待動作定義（評価用正解データ）。"
+    }
+  ]
+}

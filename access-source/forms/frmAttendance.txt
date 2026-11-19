@@ -1,0 +1,438 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =1
+    ViewsAllowed =1
+    ScrollBars =2
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =15600
+    DatasheetFontHeight =11
+    ItemSuffix =26
+    Caption ="勤怠記録一覧"
+    RecordSource ="qryAttendanceHistory"
+    OnLoad ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =2160
+            BackColor =15921906
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =200
+                    Width =5400
+                    Height =440
+                    FontSize =14
+                    FontWeight =700
+                    Name ="lblTitle"
+                    Caption ="勤怠記録一覧・従業員別履歴"
+                End
+                Begin CommandButton
+                    Left =10200
+                    Top =200
+                    Width =2400
+                    Height =440
+                    Name ="btnPrintReport"
+                    Caption ="レポート出力"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =12840
+                    Top =200
+                    Width =2400
+                    Height =440
+                    Name ="btnBackToMain"
+                    Caption ="メイン画面へ戻る"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =820
+                    Width =1000
+                    Height =300
+                    Name ="lblFilterEmployee"
+                    Caption ="従業員:"
+                End
+                Begin ComboBox
+                    ColumnCount =2
+                    ColumnHeads = NotDefault
+                    Left =1440
+                    Top =800
+                    Width =3100
+                    Height =340
+                    BoundColumn =1
+                    ColumnWidths ="1100;2000"
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT EmployeeID, EmployeeName FROM qryEmployees ORDER BY EmployeeID;"
+                    Name ="cboFilterEmployee"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =4800
+                    Top =820
+                    Width =2100
+                    Height =300
+                    Name ="lblFilterWorkDate"
+                    Caption ="勤務日 (YYYY-MM-DD):"
+                End
+                Begin TextBox
+                    Left =6960
+                    Top =800
+                    Width =1800
+                    Height =340
+                    Name ="txtFilterWorkDate"
+                    ControlSource =""
+                End
+                Begin Label
+                    Left =9000
+                    Top =820
+                    Width =800
+                    Height =300
+                    Name ="lblFilterStatus"
+                    Caption ="状態:"
+                End
+                Begin ComboBox
+                    Left =9840
+                    Top =800
+                    Width =1680
+                    Height =340
+                    RowSourceType ="Value List"
+                    RowSource ="\"All\";\"Working\";\"Completed\""
+                    DefaultValue ="\"All\""
+                    Name ="cboFilterStatus"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =11760
+                    Top =780
+                    Width =1560
+                    Height =380
+                    Name ="btnApplyFilter"
+                    Caption ="検索"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =13560
+                    Top =780
+                    Width =1680
+                    Height =380
+                    Name ="btnClearFilter"
+                    Caption ="条件クリア"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =1720
+                    Width =2100
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrAttendanceID"
+                    Caption ="勤怠ID"
+                End
+                Begin Label
+                    Left =2580
+                    Top =1720
+                    Width =1140
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrEmployeeID"
+                    Caption ="従業員ID"
+                End
+                Begin Label
+                    Left =3840
+                    Top =1720
+                    Width =1800
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrEmployeeName"
+                    Caption ="氏名"
+                End
+                Begin Label
+                    Left =5760
+                    Top =1720
+                    Width =1440
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrDepartment"
+                    Caption ="所属部署"
+                End
+                Begin Label
+                    Left =7320
+                    Top =1720
+                    Width =1440
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrWorkDate"
+                    Caption ="勤務日"
+                End
+                Begin Label
+                    Left =8880
+                    Top =1720
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrClockIn"
+                    Caption ="出勤時刻"
+                End
+                Begin Label
+                    Left =11400
+                    Top =1720
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrClockOut"
+                    Caption ="退勤時刻"
+                End
+                Begin Label
+                    Left =13920
+                    Top =1720
+                    Width =1320
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrStatus"
+                    Caption ="状態"
+                End
+            End
+        End
+        Begin Section
+            Height =520
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =360
+                    Top =90
+                    Width =2100
+                    Height =340
+                    Name ="txtAttendanceID"
+                    ControlSource ="AttendanceID"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =2580
+                    Top =90
+                    Width =1140
+                    Height =340
+                    Name ="txtEmployeeID"
+                    ControlSource ="EmployeeID"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =3840
+                    Top =90
+                    Width =1800
+                    Height =340
+                    Name ="txtEmployeeName"
+                    ControlSource ="EmployeeName"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =5760
+                    Top =90
+                    Width =1440
+                    Height =340
+                    Name ="txtDepartment"
+                    ControlSource ="Department"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =7320
+                    Top =90
+                    Width =1440
+                    Height =340
+                    Name ="txtWorkDate"
+                    ControlSource ="WorkDate"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =8880
+                    Top =90
+                    Width =2400
+                    Height =340
+                    Name ="txtClockIn"
+                    ControlSource ="ClockIn"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =11400
+                    Top =90
+                    Width =2400
+                    Height =340
+                    Name ="txtClockOut"
+                    ControlSource ="ClockOut"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =13920
+                    Top =90
+                    Width =1320
+                    Height =340
+                    Name ="txtStatus"
+                    ControlSource ="Status"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =640
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =160
+                    Width =1320
+                    Height =300
+                    Name ="lblRecordCount"
+                    Caption ="該当件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1800
+                    Top =140
+                    Width =1200
+                    Height =340
+                    Name ="txtRecordCount"
+                    ControlSource ="=Count([AttendanceID])"
+                End
+                Begin Label
+                    Left =3480
+                    Top =160
+                    Width =1560
+                    Height =300
+                    Name ="lblWorkingCount"
+                    Caption ="うち未退勤:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =5160
+                    Top =140
+                    Width =1200
+                    Height =340
+                    Name ="txtWorkingCount"
+                    ControlSource ="=Sum(IIf([Status]='Working',1,0))"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Me.cboFilterStatus.Value = "All"
+    Me.txtFilterWorkDate.Value = ""
+
+    If Not IsNull(Me.OpenArgs) And Len(Trim$(CStr(Me.OpenArgs))) > 0 Then
+        Me.cboFilterEmployee.Value = Trim$(CStr(Me.OpenArgs))
+        ApplyAttendanceFilter
+    Else
+        Me.cboFilterEmployee.Value = Null
+        Me.Filter = ""
+        Me.FilterOn = False
+    End If
+End Sub
+
+Public Sub ApplyAttendanceFilter()
+    Dim filterParts As String
+    Dim empId As String
+    Dim workDateText As String
+    Dim statusVal As String
+    Dim errMsg As String
+
+    empId = Trim$(Nz(Me.cboFilterEmployee.Value, ""))
+    workDateText = Trim$(Nz(Me.txtFilterWorkDate.Value, ""))
+    statusVal = Trim$(Nz(Me.cboFilterStatus.Value, "All"))
+
+    If Not ValidateDateFilter(workDateText, errMsg) Then
+        MsgBox errMsg, vbExclamation, "検索条件エラー"
+        Me.txtFilterWorkDate.SetFocus
+        Exit Sub
+    End If
+
+    filterParts = ""
+
+    If Len(empId) > 0 Then
+        filterParts = AppendFilterCondition(filterParts, "EmployeeID = '" & SqlEscape(empId) & "'")
+    End If
+
+    If Len(workDateText) > 0 Then
+        filterParts = AppendFilterCondition(filterParts, "WorkDate = '" & SqlEscape(workDateText) & "'")
+    End If
+
+    If Len(statusVal) > 0 And statusVal <> "All" Then
+        filterParts = AppendFilterCondition(filterParts, "Status = '" & SqlEscape(statusVal) & "'")
+    End If
+
+    If Len(filterParts) > 0 Then
+        Me.Filter = filterParts
+        Me.FilterOn = True
+    Else
+        Me.Filter = ""
+        Me.FilterOn = False
+    End If
+End Sub
+
+Private Function AppendFilterCondition(ByVal existingFilter As String, ByVal newCondition As String) As String
+    If Len(existingFilter) = 0 Then
+        AppendFilterCondition = newCondition
+    Else
+        AppendFilterCondition = existingFilter & " AND " & newCondition
+    End If
+End Function
+
+Private Sub cboFilterEmployee_AfterUpdate()
+    ApplyAttendanceFilter
+End Sub
+
+Private Sub cboFilterStatus_AfterUpdate()
+    ApplyAttendanceFilter
+End Sub
+
+Private Sub btnApplyFilter_Click()
+    ApplyAttendanceFilter
+End Sub
+
+Private Sub btnClearFilter_Click()
+    Me.cboFilterEmployee.Value = Null
+    Me.txtFilterWorkDate.Value = ""
+    Me.cboFilterStatus.Value = "All"
+    Me.Filter = ""
+    Me.FilterOn = False
+End Sub
+
+Private Sub btnPrintReport_Click()
+    Dim whereCond As String
+    If Me.FilterOn Then
+        whereCond = Me.Filter
+    Else
+        whereCond = ""
+    End If
+
+    DoCmd.OpenReport "rptAttendanceHistory", acViewPreview, , whereCond
+End Sub
+
+Private Sub btnBackToMain_Click()
+    If Not CurrentProject.AllForms("frmMain").IsLoaded Then
+        DoCmd.OpenForm "frmMain", acNormal
+    Else
+        Forms("frmMain").RefreshAttendanceViews
+        Forms("frmMain").SetFocus
+    End If
+    DoCmd.Close acForm, Me.Name, acSaveNo
+End Sub

@@ -1,0 +1,281 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Form
+    RecordSelectors = NotDefault
+    NavigationButtons = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DefaultView =1
+    ViewsAllowed =1
+    ScrollBars =2
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =13200
+    DatasheetFontHeight =11
+    ItemSuffix =18
+    Caption ="従業員一覧"
+    RecordSource ="qryEmployees"
+    OnLoad ="[Event Procedure]"
+    AllowAdditions = NotDefault
+    AllowDeletions = NotDefault
+    AllowEdits = NotDefault
+    Begin
+        Begin FormHeader
+            Height =1680
+            BackColor =15921906
+            Name ="FormHeader"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =200
+                    Width =3600
+                    Height =440
+                    FontSize =14
+                    FontWeight =700
+                    Name ="lblTitle"
+                    Caption ="従業員一覧"
+                End
+                Begin Label
+                    Left =360
+                    Top =760
+                    Width =1560
+                    Height =300
+                    Name ="lblFilterDepartment"
+                    Caption ="部署絞り込み:"
+                End
+                Begin ComboBox
+                    Left =2040
+                    Top =740
+                    Width =2800
+                    Height =340
+                    ColumnCount =1
+                    BoundColumn =1
+                    RowSourceType ="Table/Query"
+                    RowSource ="SELECT DISTINCT Department FROM qryEmployees ORDER BY Department;"
+                    Name ="cboFilterDepartment"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =5040
+                    Top =720
+                    Width =1800
+                    Height =380
+                    Name ="btnClearFilter"
+                    Caption ="絞り込み解除"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =10440
+                    Top =220
+                    Width =2400
+                    Height =440
+                    Name ="btnBackToMain"
+                    Caption ="メイン画面へ戻る"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin Label
+                    Left =360
+                    Top =1280
+                    Width =1400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrEmployeeID"
+                    Caption ="従業員ID"
+                End
+                Begin Label
+                    Left =1920
+                    Top =1280
+                    Width =2400
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrEmployeeName"
+                    Caption ="氏名"
+                End
+                Begin Label
+                    Left =4500
+                    Top =1280
+                    Width =2000
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrDepartment"
+                    Caption ="所属部署"
+                End
+                Begin Label
+                    Left =6660
+                    Top =1280
+                    Width =1500
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrStatus"
+                    Caption ="ステータス"
+                End
+                Begin Label
+                    Left =8400
+                    Top =1280
+                    Width =4440
+                    Height =300
+                    FontWeight =700
+                    Name ="lblHdrActions"
+                    Caption ="操作"
+                End
+            End
+        End
+        Begin Section
+            Height =560
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =360
+                    Top =100
+                    Width =1400
+                    Height =340
+                    Name ="txtEmployeeID"
+                    ControlSource ="EmployeeID"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1920
+                    Top =100
+                    Width =2400
+                    Height =340
+                    Name ="txtEmployeeName"
+                    ControlSource ="EmployeeName"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =4500
+                    Top =100
+                    Width =2000
+                    Height =340
+                    Name ="txtDepartment"
+                    ControlSource ="Department"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =6660
+                    Top =100
+                    Width =1500
+                    Height =340
+                    Name ="txtStatus"
+                    ControlSource ="Status"
+                End
+                Begin CommandButton
+                    Left =8400
+                    Top =90
+                    Width =2160
+                    Height =360
+                    Name ="btnSelectForPunch"
+                    Caption ="選択して打刻へ"
+                    OnClick ="[Event Procedure]"
+                End
+                Begin CommandButton
+                    Left =10740
+                    Top =90
+                    Width =2100
+                    Height =360
+                    Name ="btnShowHistory"
+                    Caption ="勤怠履歴を表示"
+                    OnClick ="[Event Procedure]"
+                End
+            End
+        End
+        Begin FormFooter
+            Height =600
+            BackColor =15921906
+            Name ="FormFooter"
+            Begin
+                Begin Label
+                    Left =360
+                    Top =140
+                    Width =1440
+                    Height =300
+                    Name ="lblEmployeeCount"
+                    Caption ="表示件数:"
+                End
+                Begin TextBox
+                    Locked = NotDefault
+                    Left =1920
+                    Top =120
+                    Width =1200
+                    Height =340
+                    Name ="txtEmployeeCount"
+                    ControlSource ="=Count([EmployeeID])"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Me.Filter = ""
+    Me.FilterOn = False
+    Me.cboFilterDepartment.Value = Null
+End Sub
+
+Private Sub cboFilterDepartment_AfterUpdate()
+    Dim selectedDept As String
+
+    selectedDept = Trim$(Nz(Me.cboFilterDepartment.Value, ""))
+    If Len(selectedDept) = 0 Then
+        Me.Filter = ""
+        Me.FilterOn = False
+    Else
+        Me.Filter = "Department = '" & SqlEscape(selectedDept) & "'"
+        Me.FilterOn = True
+    End If
+End Sub
+
+Private Sub btnClearFilter_Click()
+    Me.cboFilterDepartment.Value = Null
+    Me.Filter = ""
+    Me.FilterOn = False
+End Sub
+
+Private Sub btnSelectForPunch_Click()
+    Dim empId As String
+    Dim errMsg As String
+
+    empId = Nz(Me.txtEmployeeID.Value, "")
+    If Not ValidateEmployeeActive(empId, errMsg) Then
+        MsgBox errMsg, vbExclamation, "打刻対象外"
+        Exit Sub
+    End If
+
+    If Not CurrentProject.AllForms("frmMain").IsLoaded Then
+        DoCmd.OpenForm "frmMain", acNormal
+    End If
+
+    Forms("frmMain").SelectEmployee empId
+    Forms("frmMain").SetFocus
+End Sub
+
+Private Sub btnShowHistory_Click()
+    Dim empId As String
+
+    empId = Nz(Me.txtEmployeeID.Value, "")
+    If Len(Trim$(empId)) = 0 Then
+        Exit Sub
+    End If
+
+    DoCmd.OpenForm "frmAttendance", acNormal, , , , acWindowNormal, empId
+End Sub
+
+Private Sub btnBackToMain_Click()
+    If Not CurrentProject.AllForms("frmMain").IsLoaded Then
+        DoCmd.OpenForm "frmMain", acNormal
+    Else
+        Forms("frmMain").SetFocus
+    End If
+    DoCmd.Close acForm, Me.Name, acSaveNo
+End Sub

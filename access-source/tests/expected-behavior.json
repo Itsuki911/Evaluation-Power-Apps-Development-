@@ -1,0 +1,236 @@
+{
+  "metadata": {
+    "role": "evaluation-ground-truth",
+    "fileCategory": "evaluation_ground_truth",
+    "isSimulatedAccessExport": false,
+    "applicationName": "AttendanceManagement",
+    "description": "移行後アプリケーションの動作妥当性を検証するための評価用期待動作定義。移行実装時の設計解答ではなく、受け入れ評価基準として使用する。"
+  },
+  "testCases": [
+    {
+      "testId": "TC-001",
+      "targetFeature": "従業員一覧表示",
+      "preconditions": [
+        "data/Employees.xlsx の EmployeesTable に初期サンプルデータ5件（EMP001〜EMP005）が存在する。",
+        "アプリが初期画面（frmMain相当）で起動している。"
+      ],
+      "steps": [
+        "メイン画面の「従業員一覧」ボタン（btnOpenEmployees相当）を選択する。",
+        "表示された従業員一覧を確認する。"
+      ],
+      "expectedResults": [
+        "EmployeesTable の全5名（EMP001 山田 太郎、EMP002 佐藤 花子、EMP003 鈴木 一郎、EMP004 高橋 美咲、EMP005 田中 健二）が表示される。",
+        "各行に EmployeeID、EmployeeName、Department、Status が正しく表示される。",
+        "表示件数が 5 件と集計表示される。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "forms/frmEmployees.txt",
+        "queries/qryEmployees.sql",
+        "data/Employees.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-002",
+      "targetFeature": "従業員の選択",
+      "preconditions": [
+        "アプリがメイン画面（frmMain相当）を表示している。",
+        "EMP001（山田 太郎 / 開発部 / Active）が在籍中として登録されている。"
+      ],
+      "steps": [
+        "従業員選択ドロップダウン（cboEmployee相当）を開く。",
+        "EMP001（山田 太郎）を選択する。"
+      ],
+      "expectedResults": [
+        "ドロップダウンの候補には Status='Active' の従業員（EMP001〜EMP004）のみが選択対象として表示される。",
+        "EMP001を選択すると、選択中の氏名「山田 太郎」、所属部署「開発部」、および現在の勤怠状態が表示される。",
+        "選択従業員の勤怠履歴エリアに EMP001 の過去レコードのみが表示される。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "queries/qryEmployees.sql",
+        "queries/qryAttendanceHistory.sql",
+        "modules/modAttendance.bas"
+      ]
+    },
+    {
+      "testId": "TC-003",
+      "targetFeature": "出勤打刻による勤怠レコード作成",
+      "preconditions": [
+        "EMP001（山田 太郎）には現在未退勤（Status='Working'）のレコードが存在しない。",
+        "メイン画面で EMP001 が選択されている。"
+      ],
+      "steps": [
+        "「出勤打刻」ボタン（btnClockIn相当）を押下する。"
+      ],
+      "expectedResults": [
+        "AttendanceRecordsTable に新しいレコードが1件追加される。",
+        "新規レコードの EmployeeID が 'EMP001'、WorkDate が当日（YYYY-MM-DD）、ClockIn が現在日時（YYYY-MM-DD HH:MM:SS）、ClockOut が空、Status が 'Working' として保存される。",
+        "AttendanceID が一意な形式（ATT-YYYYMMDD-NNN）で採番される。",
+        "完了通知メッセージが表示される。",
+        "現在の状態表示が「出勤中（未退勤）」に更新され、未退勤一覧および選択従業員の勤怠履歴に新規レコードが反映される。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "modules/modAttendance.bas",
+        "modules/modValidation.bas",
+        "queries/qryOpenAttendance.sql",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-004",
+      "targetFeature": "退勤打刻による既存勤怠レコード更新",
+      "preconditions": [
+        "TC-003 等により EMP001 に未退勤レコード（Status='Working'、ClockOut が空）が1件存在する。",
+        "メイン画面で EMP001 が選択されている。"
+      ],
+      "steps": [
+        "「退勤打刻」ボタン（btnClockOut相当）を押下する。"
+      ],
+      "expectedResults": [
+        "新規レコードは追加されず、EMP001 の既存の未退勤レコードが更新される。",
+        "更新後レコードの ClockOut に現在日時（YYYY-MM-DD HH:MM:SS）が設定され、Status が 'Completed' に変更される。",
+        "完了通知メッセージが表示される。",
+        "現在の状態表示が「退勤済」に更新され、未退勤一覧から当該レコードが消え、勤怠履歴に退勤時刻が表示される。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "modules/modAttendance.bas",
+        "modules/modValidation.bas",
+        "queries/qryOpenAttendance.sql",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-005",
+      "targetFeature": "出勤打刻の重複防止",
+      "preconditions": [
+        "EMP001 に未退勤（Status='Working'、ClockOut が空）のレコードが既に1件存在する（または初期データの未退勤従業員 EMP003 を選択している）。",
+        "メイン画面で該当従業員が選択されている。"
+      ],
+      "steps": [
+        "「出勤打刻」ボタン（btnClockIn相当）を押下する。"
+      ],
+      "expectedResults": [
+        "重複出勤を禁止する警告メッセージが表示される。",
+        "AttendanceRecordsTable に新たなレコードは追加されない。",
+        "既存の未退勤レコードの内容は変更されない。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "modules/modValidation.bas",
+        "modules/modAttendance.bas",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-006",
+      "targetFeature": "出勤記録なしでの退勤防止",
+      "preconditions": [
+        "EMP002（佐藤 花子）には未退勤（Status='Working'）のレコードが存在しない。",
+        "メイン画面で EMP002 が選択されている。"
+      ],
+      "steps": [
+        "「退勤打刻」ボタン（btnClockOut相当）を押下する。"
+      ],
+      "expectedResults": [
+        "未退勤の出勤記録が存在しない旨の警告メッセージが表示される。",
+        "AttendanceRecordsTable の既存レコードは一切更新されず、新規レコードも追加されない。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "modules/modValidation.bas",
+        "modules/modAttendance.bas",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-007",
+      "targetFeature": "従業員別の勤怠履歴表示",
+      "preconditions": [
+        "data/AttendanceRecords.xlsx に EMP001 の勤怠記録が複数件（初期データ3件）、他従業員の記録も存在する。"
+      ],
+      "steps": [
+        "勤怠記録一覧画面（frmAttendance相当）を開く。",
+        "従業員絞り込み条件（cboFilterEmployee相当）で EMP001（山田 太郎）を選択して絞り込みを適用する。"
+      ],
+      "expectedResults": [
+        "EMP001 の勤怠記録のみが勤務日・出勤時刻の降順で一覧表示される。",
+        "他従業員（EMP002、EMP003、EMP004等）の記録は表示されない。",
+        "各行に AttendanceID、EmployeeID、EmployeeName、Department、WorkDate、ClockIn、ClockOut、Status が表示される。",
+        "該当件数が正しく集計される。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmAttendance.txt",
+        "forms/frmMain.txt",
+        "queries/qryAttendanceHistory.sql",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-008",
+      "targetFeature": "アプリ再起動後のデータ永続化",
+      "preconditions": [
+        "TC-003 または TC-004 により、出勤打刻・退勤打刻で AttendanceRecordsTable のデータが追加または更新されている。"
+      ],
+      "steps": [
+        "アプリケーションを完全に終了（またはブラウザセッションを閉じて再読み込み）し、再起動する。",
+        "勤怠記録一覧画面およびメイン画面の履歴表示を確認する。"
+      ],
+      "expectedResults": [
+        "再起動前に作成・更新された勤怠レコード（AttendanceID、WorkDate、ClockIn、ClockOut、Status）が欠損なく保持・表示される。",
+        "メモリ上の一時データではなく、永続データソース（AttendanceRecords.xlsx の AttendanceRecordsTable）に保存されている。"
+      ],
+      "relatedAccessObjects": [
+        "macros/AutoExec.txt",
+        "forms/frmMain.txt",
+        "forms/frmAttendance.txt",
+        "modules/modAttendance.bas",
+        "data/AttendanceRecords.xlsx"
+      ]
+    },
+    {
+      "testId": "TC-009",
+      "targetFeature": "従業員未選択時の入力検証",
+      "preconditions": [
+        "メイン画面で従業員が未選択（空）の状態である。"
+      ],
+      "steps": [
+        "従業員を選択せずに「出勤打刻」ボタン（btnClockIn相当）を押下する。",
+        "続いて「退勤打刻」ボタン（btnClockOut相当）を押下する。"
+      ],
+      "expectedResults": [
+        "いずれの操作でも従業員選択を促す警告メッセージが表示される。",
+        "AttendanceRecordsTable に対する追加・更新は一切行われない。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "modules/modValidation.bas",
+        "modules/modAttendance.bas"
+      ]
+    },
+    {
+      "testId": "TC-010",
+      "targetFeature": "未退勤状態の表示と一覧フィルタリング",
+      "preconditions": [
+        "初期データとして EMP003（鈴木 一郎）の未退勤レコード（ATT-20261118-002、Status='Working'、ClockOut空）が存在する。"
+      ],
+      "steps": [
+        "メイン画面の未退勤一覧（lstOpenAttendance相当）を確認する。",
+        "勤怠記録一覧画面（frmAttendance相当）を開き、状態フィルタで 'Working' を選択して検索する。"
+      ],
+      "expectedResults": [
+        "メイン画面の未退勤一覧に EMP003（ATT-20261118-002）が表示される。",
+        "勤怠記録一覧画面で Status='Working' で絞り込むと、未退勤レコードのみが表示され、未退勤件数集計が一致する。"
+      ],
+      "relatedAccessObjects": [
+        "forms/frmMain.txt",
+        "forms/frmAttendance.txt",
+        "queries/qryOpenAttendance.sql",
+        "queries/qryAttendanceHistory.sql",
+        "data/AttendanceRecords.xlsx"
+      ]
+    }
+  ]
+}

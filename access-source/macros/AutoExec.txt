@@ -1,0 +1,26 @@
+Version =196611
+ColumnsShown =0
+Begin
+    Comment ="AutoExec: Startup macro executed automatically when the Access database opens."
+End
+Begin
+    Action ="OpenForm"
+    Argument ="frmMain"
+    Argument ="0"
+    Argument =""
+    Argument =""
+    Argument ="-1"
+    Argument ="0"
+End
+Begin
+    Comment ="_AXL:<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?>"
+    Comment ="_AXL:<UserInterfaceMacro MinimumClientDesignVersion=\"14.0.0000.0000\" xmlns=\"http://schemas.microsoft.com/office/accessservices/2009/11/application\">"
+    Comment ="_AXL:  <Statements>"
+    Comment ="_AXL:    <Action Name=\"OpenForm\">"
+    Comment ="_AXL:      <Argument Name=\"FormName\">frmMain</Argument>"
+    Comment ="_AXL:      <Argument Name=\"View\">Form</Argument>"
+    Comment ="_AXL:      <Argument Name=\"WindowMode\">Normal</Argument>"
+    Comment ="_AXL:    </Action>"
+    Comment ="_AXL:  </Statements>"
+    Comment ="_AXL:</UserInterfaceMacro>"
+End

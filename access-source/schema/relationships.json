@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "fileCategory": "custom_auxiliary",
+    "isSimulatedAccessExport": false,
+    "description": "Logical table relationships for the AttendanceManagement Access database."
+  },
+  "relationships": [
+    {
+      "name": "Employees_AttendanceRecords_EmployeeID",
+      "parentTable": "Employees",
+      "parentColumn": "EmployeeID",
+      "childTable": "AttendanceRecords",
+      "childColumn": "EmployeeID",
+      "cardinality": "one-to-many",
+      "joinTypeDefault": "INNER JOIN",
+      "enforcedByEngine": false,
+      "enforcementNotes": "Microsoft Access cannot enforce physical referential integrity on linked Excel tables. Referential existence and Active status are validated in VBA via modValidation.ValidateEmployeeActive."
+    }
+  ]
+}

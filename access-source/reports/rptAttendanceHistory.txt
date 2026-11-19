@@ -1,0 +1,271 @@
+Version =21
+VersionRequired =20
+Checksum =0
+Begin Report
+    LayoutForPrint = NotDefault
+    DividingLines = NotDefault
+    AllowDesignChanges = NotDefault
+    DateGrouping =1
+    GrpKeepTogether =1
+    PictureAlignment =2
+    DatasheetGridlinesBehavior =3
+    GridY =10
+    Width =11520
+    DatasheetFontHeight =11
+    ItemSuffix =18
+    Caption ="従業員別 勤怠履歴レポート"
+    RecordSource ="qryAttendanceHistory"
+    OnNoData ="[Event Procedure]"
+    Begin
+        Begin GroupLevel
+            GroupHeader = NotDefault
+            GroupFooter = NotDefault
+            ControlSource ="EmployeeID"
+        End
+        Begin GroupLevel
+            SortOrder = NotDefault
+            ControlSource ="WorkDate"
+        End
+        Begin GroupLevel
+            SortOrder = NotDefault
+            ControlSource ="ClockIn"
+        End
+        Begin ReportHeader
+            Height =960
+            BackColor =16777215
+            Name ="ReportHeader"
+            Begin
+                Begin Label
+                    Left =240
+                    Top =200
+                    Width =6000
+                    Height =480
+                    FontSize =16
+                    FontWeight =700
+                    Name ="lblReportTitle"
+                    Caption ="従業員別 勤怠履歴レポート"
+                End
+                Begin TextBox
+                    Left =8400
+                    Top =280
+                    Width =2880
+                    Height =320
+                    Name ="txtPrintDate"
+                    ControlSource ="=Format(Now(),\"yyyy-mm-dd hh:nn\")"
+                End
+            End
+        End
+        Begin PageHeader
+            Height =480
+            BackColor =15921906
+            Name ="PageHeaderSection"
+            Begin
+                Begin Label
+                    Left =240
+                    Top =100
+                    Width =2160
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrAttendanceID"
+                    Caption ="勤怠ID"
+                End
+                Begin Label
+                    Left =2520
+                    Top =100
+                    Width =1560
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrWorkDate"
+                    Caption ="勤務日"
+                End
+                Begin Label
+                    Left =4200
+                    Top =100
+                    Width =2640
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrClockIn"
+                    Caption ="出勤時刻"
+                End
+                Begin Label
+                    Left =6960
+                    Top =100
+                    Width =2640
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrClockOut"
+                    Caption ="退勤時刻"
+                End
+                Begin Label
+                    Left =9720
+                    Top =100
+                    Width =1560
+                    Height =280
+                    FontWeight =700
+                    Name ="lblHdrStatus"
+                    Caption ="状態"
+                End
+            End
+        End
+        Begin BreakHeader
+            KeepTogether = NotDefault
+            Height =520
+            BackColor =16448250
+            Name ="GroupHeader0"
+            Begin
+                Begin TextBox
+                    Left =240
+                    Top =100
+                    Width =1440
+                    Height =320
+                    FontWeight =700
+                    Name ="txtGroupEmployeeID"
+                    ControlSource ="EmployeeID"
+                End
+                Begin TextBox
+                    Left =1800
+                    Top =100
+                    Width =2640
+                    Height =320
+                    FontWeight =700
+                    Name ="txtGroupEmployeeName"
+                    ControlSource ="EmployeeName"
+                End
+                Begin TextBox
+                    Left =4560
+                    Top =100
+                    Width =2400
+                    Height =320
+                    Name ="txtGroupDepartment"
+                    ControlSource ="Department"
+                End
+            End
+        End
+        Begin Section
+            KeepTogether = NotDefault
+            Height =440
+            BackColor =16777215
+            Name ="Detail"
+            Begin
+                Begin TextBox
+                    Left =240
+                    Top =60
+                    Width =2160
+                    Height =320
+                    Name ="txtAttendanceID"
+                    ControlSource ="AttendanceID"
+                End
+                Begin TextBox
+                    Left =2520
+                    Top =60
+                    Width =1560
+                    Height =320
+                    Name ="txtWorkDate"
+                    ControlSource ="WorkDate"
+                End
+                Begin TextBox
+                    Left =4200
+                    Top =60
+                    Width =2640
+                    Height =320
+                    Name ="txtClockIn"
+                    ControlSource ="ClockIn"
+                End
+                Begin TextBox
+                    Left =6960
+                    Top =60
+                    Width =2640
+                    Height =320
+                    Name ="txtClockOut"
+                    ControlSource ="ClockOut"
+                End
+                Begin TextBox
+                    Left =9720
+                    Top =60
+                    Width =1560
+                    Height =320
+                    Name ="txtStatus"
+                    ControlSource ="Status"
+                End
+            End
+        End
+        Begin BreakFooter
+            KeepTogether = NotDefault
+            Height =480
+            BackColor =16777215
+            Name ="GroupFooter0"
+            Begin
+                Begin Label
+                    Left =7800
+                    Top =80
+                    Width =1800
+                    Height =300
+                    FontWeight =700
+                    Name ="lblEmployeeSubtotal"
+                    Caption ="従業員別件数:"
+                End
+                Begin TextBox
+                    Left =9720
+                    Top =80
+                    Width =1560
+                    Height =300
+                    FontWeight =700
+                    Name ="txtEmployeeSubtotal"
+                    ControlSource ="=Count([AttendanceID])"
+                End
+            End
+        End
+        Begin PageFooter
+            Height =420
+            BackColor =16777215
+            Name ="PageFooterSection"
+            Begin
+                Begin TextBox
+                    Left =9240
+                    Top =60
+                    Width =2040
+                    Height =300
+                    Name ="txtPageNumber"
+                    ControlSource ="=\"Page \" & [Page] & \" / \" & [Pages]"
+                End
+            End
+        End
+        Begin ReportFooter
+            Height =600
+            BackColor =15921906
+            Name ="ReportFooter"
+            Begin
+                Begin Label
+                    Left =7800
+                    Top =140
+                    Width =1800
+                    Height =320
+                    FontWeight =700
+                    Name ="lblGrandTotal"
+                    Caption ="総合計件数:"
+                End
+                Begin TextBox
+                    Left =9720
+                    Top =140
+                    Width =1560
+                    Height =320
+                    FontWeight =700
+                    Name ="txtGrandTotal"
+                    ControlSource ="=Count([AttendanceID])"
+                End
+            End
+        End
+    End
+End
+CodeBehindReport
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Compare Database
+Option Explicit
+
+Private Sub Report_NoData(Cancel As Integer)
+    MsgBox "出力対象の勤怠履歴データがありません。", vbInformation, "勤怠履歴レポート"
+    Cancel = True
+End Sub

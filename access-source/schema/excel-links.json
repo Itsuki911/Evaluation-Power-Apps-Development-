@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "fileCategory": "custom_auxiliary",
+    "isSimulatedAccessExport": false,
+    "description": "Simulated Microsoft Access linked-table configuration and Excel write-back settings."
+  },
+  "accessExcelConstraints": {
+    "reference": "Microsoft ACE Excel ISAM restriction (KB 904953)",
+    "summary": "Linked Excel tables in Microsoft Access are read-only for DAO UPDATE/DELETE operations. Queries, Forms, and Reports read through the linked tables, while VBA write operations (Clock-In INSERT and Clock-Out UPDATE) execute via ADODB against Microsoft.ACE.OLEDB.12.0 with READONLY=FALSE.",
+    "deleteSupportedOnExcel": false
+  },
+  "links": [
+    {
+      "accessTableName": "Employees",
+      "workbookRelativePath": "data/Employees.xlsx",
+      "worksheetName": "Employees",
+      "excelTableName": "EmployeesTable",
+      "accessSourceTableName": "Employees$",
+      "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\Employees.xlsx",
+      "accessMode": "read-only"
+    },
+    {
+      "accessTableName": "AttendanceRecords",
+      "workbookRelativePath": "data/AttendanceRecords.xlsx",
+      "worksheetName": "AttendanceRecords",
+      "excelTableName": "AttendanceRecordsTable",
+      "accessSourceTableName": "AttendanceRecords$",
+      "simulatedDaoConnectString": "Excel 12.0 Xml;HDR=YES;IMEX=2;ACCDB=YES;DATABASE=.\\data\\AttendanceRecords.xlsx",
+      "writeBackProvider": "ADODB (Microsoft.ACE.OLEDB.12.0)",
+      "simulatedAdoWriteConnectString": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\\data\\AttendanceRecords.xlsx;Extended Properties=\"Excel 12.0 Xml;HDR=YES;READONLY=FALSE;\";",
+      "accessMode": "read-via-linked-table-write-via-adodb"
+    }
+  ]
+}
