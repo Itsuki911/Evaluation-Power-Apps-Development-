@@ -10,7 +10,7 @@
 - [公開 MCP 起動設定](https://github.com/microsoft/power-platform-skills/blob/42a94220bad33ffc815c3b8fb9e7229e65ad3542/plugins/canvas-apps/.mcp.json)
 - [接続スキル](https://github.com/microsoft/power-platform-skills/blob/42a94220bad33ffc815c3b8fb9e7229e65ad3542/plugins/canvas-apps/skills/configure-canvas-mcp/SKILL.md)
 
-必要な作業の前に次の原文を参照します。内容はこのリポジトリに丸ごと複製せず、参照リンクを管理します。
+必要な作業の前に次の原文を参照します。主要な Canvas ガイドは同じ固定版を `.agents/skills/canvas-codex/references/microsoft/` に原文のまま同梱し、対応する MIT ライセンスを保存しています。以下は上流へのリンクです。
 
 | 用途 | 固定リビジョンのガイド |
 |---|---|
@@ -46,7 +46,7 @@ Codex CLI のローカル `mcp add --help` と Context7 の公式ソース資料
 
 ## ライセンスと更新手順
 
-両 Microsoft リポジトリの LICENSE は MIT でした。リンク参照を基本とし、設定・手順の調整由来を明示しています。Microsoft の著作権・ライセンス文は [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) に保持します。公式資料を将来コピーする場合もライセンスを保持してください。
+両 Microsoft リポジトリの LICENSE は MIT でした。Canvas 公式原文の一部を同梱し、Codex 向けスキルは独自調整として区別しています。Microsoft の著作権・ライセンス文は [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) と同梱ディレクトリに保持します。
 
 1. 公式リポジトリを別の一時ディレクトリに取得し、上記コミットからの差分を読む。
 2. `.mcp.json`、connect の入力、スキル依存、QA、ライセンスの変更を確認する。
@@ -55,3 +55,5 @@ Codex CLI のローカル `mcp add --help` と Context7 の公式ソース資料
 5. 検証用 Studio に読み取り接続し、アプリの実テストを別途実施する。
 
 `dnx` のパッケージは公式公開設定どおりバージョン未固定です。今回起動した版は確認結果に記録しています。SDK・NuGet パッケージ・npm 依存を同時に更新せず、変更ごとに検証してください。
+
+2026-11-19 に `git ls-remote` で上流 main が上記コミットと一致することを確認しました。同梱ファイルは自動更新されません。更新時は上流の同じパスを比較し、採用した版の原文・ライセンス・コミット ID を一緒に更新します。公式クイックインストーラーは Copilot／Claude 向けであり Codex への全面対応を確認できないため実行していません。
