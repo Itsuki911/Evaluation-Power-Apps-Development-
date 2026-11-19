@@ -1,0 +1,9 @@
+# 共有用の例。個人用 .codex/config.toml に必要なセクションだけ追記する。
+# dnx が PATH にない場合は、このマシンの dnx の絶対パスに置き換える。
+[mcp_servers.canvas-authoring]
+command = "dnx"
+args = ["Microsoft.PowerApps.CanvasAuthoring.McpServer", "--yes"]
+startup_timeout_sec = 120
+tool_timeout_sec = 180
+# 初回接続確認では適用・変更ツールをクライアント側で公開しない。
+enabled_tools = ["connect", "list_controls", "describe_control", "list_data_sources", "get_data_source_schema", "list_apis", "describe_api", "sync_canvas"]

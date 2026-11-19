@@ -1,0 +1,22 @@
+{
+  "name": "power-apps-codex-evaluation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "auth": "node scripts/auth.mjs",
+    "test": "playwright test",
+    "test:list": "playwright test --list",
+    "test:local": "playwright test --config=playwright.local.config.ts",
+    "check": "tsc --noEmit",
+    "mcp:probe": "python3 scripts/mcp_probe.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "26.6.6",
+    "typescript": "7.0.2"
+  }
+}

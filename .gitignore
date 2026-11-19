@@ -1,0 +1,16 @@
+node_modules/
+.local/
+.env
+.env.*
+!.env.example
+.codex/config.toml
+playwright/.auth/
+test-results/
+playwright-report/
+blob-report/
+*.log
+*.har
+*.msapp
+*.pa.yaml
+.DS_Store
+.codegraph/
